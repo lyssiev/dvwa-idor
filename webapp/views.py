@@ -1,5 +1,6 @@
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.models import User
+from .models import Profile
 from django.contrib import messages
 from django.shortcuts import render, redirect
 from django.contrib.auth.decorators import login_required
@@ -24,7 +25,11 @@ def logout_view(request):
 
 @login_required
 def home_view(request):
-    return render(request, 'home.html')
+    profile = Profile.objects.get(user=request.user)
+    return render(request, 'home.html', {'profile': profile})
+
+def feed_view(request):
+    return render(request, 'feed.html')
 
 def register_view(request):
     if request.method == 'POST':
@@ -45,3 +50,34 @@ def register_view(request):
         return redirect('login')
 
     return render(request, 'register.html')
+
+def profile_list(request):
+    profiles = Profile.objects.exclude(user=request.user)
+    return render(request, "profile_list.html", {"profiles": profiles})
+
+def following(request, pk):
+    profile = Profile.objects.get(pk=pk)
+    following = profile.follows.all()
+    return render(request, "following.html", {"profile": profile, "following": following})
+
+def followers(request, pk):
+    profile = Profile.objects.get(pk=pk)
+    followers = profile.follows.all()
+    return render(request, "followers.html", {"profile": profile, "followers": followers})
+
+def profile(request, pk):
+    if not hasattr(request.user, 'profile'):
+        missing_profile = Profile(user=request.user)
+        missing_profile.save()
+
+    profile = Profile.objects.get(pk=pk)
+    if request.method == "POST":
+        current_user_profile = request.user.profile
+        data = request.POST
+        action = data.get("follow")
+        if action == "follow":
+            current_user_profile.follows.add(profile)
+        elif action == "unfollow":
+            current_user_profile.follows.remove(profile)
+        current_user_profile.save()
+    return render(request, "profile.html", {"profile": profile})

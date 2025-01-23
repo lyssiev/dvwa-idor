@@ -1,0 +1,74 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Home</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
+</head>
+<body>
+    <!-- Sidebar -->
+    <div id="sidebar" class="sidebar">
+        <button id="toggleBtn" class="toggle-btn">☰</button>
+        <div class="menu-items">
+            <h4 class="text-light mt-4">Welcome to the DVWA!</h4>
+            <button class="btn btn-intro w-100 mt-4">Introduction</button>
+            <h4 class="text-light mt-4">Exercises</h4>
+            <ul class="exercise-list">
+                {% for exercise in exercises %}
+                <li class="exercise-item">
+                    <a href="{{ exercise.url }}" class="text-light">{{ exercise.title }}</a>
+                </li>
+                {% endfor %}
+            </ul>
+        </div>
+    </div>
+
+    <!-- Top Buttons -->
+    <div class="top-buttons">
+        <a href="{% url 'home' %}" class="btn-top">Your profile</a>
+        <a href="{% url 'feed' %}" class="btn-top">Feed</a>
+        <a href="{% url 'profile_list' %}" class="btn-top">All profiles</a>
+    </div>
+
+    <div class="main-content">
+        <h2 class="text-center">Following</h2>
+        <div class="profile-list">
+            {% for following in profile.follows.all %}
+            <div class="profile-item">
+                <img src="{% static 'images/default-avatar.png' %}" alt="User Avatar" class="profile-avatar">
+                <div class="profile-info">
+                    <p class="username">{{ following }}</p>
+                    <p class="handle">@{{ following|lower }}</p>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+
+    <script>
+        const toggleBtn = document.getElementById('toggleBtn');
+        const sidebar = document.getElementById('sidebar');
+        const mainContent = document.querySelector('.main-content');
+        const topButtons = document.querySelector('.top-buttons');
+    
+        toggleBtn.addEventListener('click', () => {
+            // Toggle collapsed class for the sidebar
+            sidebar.classList.toggle('collapsed');
+    
+            // Dynamically adjust the main content margin
+            if (sidebar.classList.contains('collapsed')) {
+                mainContent.classList.add('expanded');
+                topButtons.classList.add('expanded');
+            } else {
+                mainContent.classList.remove('expanded');
+                topButtons.classList.remove('expanded');
+            }
+        });
+    </script>
+
+</body>
+</html>

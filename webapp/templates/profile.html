@@ -29,14 +29,13 @@
 
     <!-- Top Buttons -->
     <div class="top-buttons">
-        <a href="{% url 'feed' %}" class="btn-top">Feed</a>
-        <a href="{% url 'logout' %}" class="btn-top">Logout</a>
+        <a href="{% url 'profile_list' %}" class="btn-top">Back</a>
     </div>
 
     <!-- Main Content -->
     <div class="main-content">
         <div class="profile-header text-center">
-            <h1>{{ user.username }}</h1>
+            <h1>{{profile.user.username}}</h1>
             <div class="stats">
                 <div>
                     <h4>{{ profile.followed_by.count }}</h4>
@@ -52,6 +51,24 @@
                 </div>
             </div>
         </div>
+
+        <form method="post">
+            {% csrf_token %}
+            <div class="buttons has-addons">
+            {% if profile in user.profile.follows.all %}
+                <button class="button is-success is-static">Follow</button>
+                <button class="button is-danger" name="follow" value="unfollow">
+                    Unfollow
+                </button>
+            {% else %}
+                <button class="button is-success" name="follow" value="follow">
+                    Follow
+                </button>
+                <button class="button is-danger is-static">Unfollow</button>
+            {% endif %}
+            </div>
+        </form>
+        
 
         <div class="posts-container">
             <h2 class="text-center">POSTS</h2>

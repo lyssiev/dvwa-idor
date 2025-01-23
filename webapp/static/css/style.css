@@ -1,0 +1,341 @@
+/* General Styles */
+body {
+    background-color: #f5f5f5;
+    font-family: 'Nunito', sans-serif;
+    margin: 0;
+    display: flex;
+    height: 100vh;
+    overflow: hidden;
+}
+
+/* Sidebar Styling */
+.sidebar {
+    background-color: #043c3c;
+    color: white;
+    width: 300px;
+    height: 100vh;
+    padding: 20px;
+    position: fixed;
+    top: 0;
+    left: 0;
+    overflow-x: hidden;
+    transition: all 0.3s ease;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    border-radius: 0 15px 15px 0;
+    /* Rounded corners */
+}
+
+.sidebar.collapsed {
+    width: 60px;
+    padding: 10px;
+}
+
+.sidebar.collapsed .menu-items {
+    display: none;
+}
+
+.sidebar .toggle-btn {
+    background: none;
+    border: none;
+    color: white;
+    font-size: 20px;
+    cursor: pointer;
+    margin-bottom: 20px;
+}
+
+.sidebar.collapsed .toggle-btn {
+    text-align: center;
+    width: 100%;
+}
+
+/* Introduction Button */
+.btn-intro {
+    background-color: #04cb95;
+    color: white;
+    border: none;
+    border-radius: 50px;
+    padding: 10px 20px;
+    font-size: 16px;
+    text-align: center;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.btn-intro:hover {
+    background-color: #028f69;
+}
+
+/* Exercise List */
+.exercise-list {
+    list-style: none;
+    padding: 0;
+}
+
+.exercise-list li {
+    margin: 10px 0;
+    font-size: 16px;
+}
+
+/* Main Content Styling */
+.main-content {
+    margin-left: 320px;
+    padding: 20px;
+    flex-grow: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    transition: margin-left 0.3s ease;
+}
+
+.main-content.expanded {
+    margin-left: 80px;
+}
+
+/* Top Buttons Styling */
+.top-buttons {
+    position: fixed;
+    flex-direction: column;
+    top: 20px;
+    left: 320px;
+    display: flex;
+    gap: 15px;
+    transition: left 0.3s ease;
+}
+
+.sidebar.collapsed~.top-buttons {
+    left: 80px;
+}
+
+.btn-feed,
+.btn-top {
+    text-decoration: none;
+    background-color: #04cb95;
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 20px;
+    font-size: 16px;
+    cursor: pointer;
+}
+
+.btn-top:hover {
+    color: #035b57;
+}
+
+/* Profile Header */
+.profile-header {
+    text-align: center;
+    margin-bottom: 30px;
+}
+
+.profile-header h1 {
+    font-size: 36px;
+    color: #043c3c;
+}
+
+.profile-header .stats {
+    display: flex;
+    justify-content: center;
+    gap: 50px;
+}
+
+.profile-header .stats div {
+    text-align: center;
+}
+
+.profile-header .stats h4 {
+    font-size: 24px;
+    color: #043c3c;
+}
+
+.profile-header .stats p {
+    font-size: 14px;
+    color: #666;
+}
+
+.btn-secondary {
+    text-decoration: none; 
+    color: #fff;
+    background-color: #6c757d; 
+    border: none;
+    padding: 5px 10px;
+    border-radius: 4px;
+    display: inline-block;
+    text-align: center;
+    font-size: 14px;
+    cursor: pointer;
+}
+
+.btn-profile {
+    text-decoration: none; 
+    color: #fff; 
+    background-color: #6c757d; 
+    border: none;
+    padding: 5px 10px;
+    border-radius: 4px;
+    display: inline-block;
+    text-align: center;
+    font-size: 14px;
+    cursor: pointer;
+}
+
+.btn-profile:hover {
+    background-color: #5a6268; 
+}
+
+/* Posts Section */
+.posts-container {
+    transition: margin-left 0.3s ease, width 0.3s ease;
+    width: 70%; 
+    padding: 20px;
+    background-color: #043c3c;
+    color: white;
+    border-radius: 15px;
+    box-sizing: border-box;
+}
+
+.feed-container {
+    transition: margin-left 0.3s ease, width 0.3s ease;
+    width: 70%; 
+    padding: 20px;
+    margin-left: 320px;
+    background-color: #043c3c;
+    color: white;
+    border-radius: 15px;
+    box-sizing: border-box;
+}
+.posts-container.expanded {
+    margin-left: 80px; 
+    width: 90%;
+}
+
+.posts-container h2 {
+    color: #ffffff;
+    margin-bottom: 20px;
+    text-align: center;
+}
+
+.post {
+    background-color: #ffffff;
+    color: #043c3c;
+    margin-bottom: 15px;
+    padding: 15px;
+    border-radius: 8px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    word-wrap: break-word;
+}
+
+.post p {
+    margin: 0;
+    word-wrap: break-word;
+}
+
+/* Profile List */
+.profile-list {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 15px;
+    width: 100%; 
+    max-width: 1200px;
+    margin: 0 auto; 
+    padding: 0 20px; 
+}
+
+/* Profile Item (Card) */
+.card-link {
+    text-decoration: none; 
+    color: inherit; 
+    display: block;
+    width: 100%; 
+}
+
+
+.profile-item {
+    display: flex;
+    align-items: center;
+    background-color: white;
+    border-radius: 15px;
+    box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+    padding: 20px;
+    transition: transform 0.2s ease;
+    width: 100%; 
+    margin: 10px 0; 
+}
+
+.profile-item:hover {
+    transform: scale(1.02); /* Slight hover effect */
+}
+
+.profile-avatar {
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    margin-right: 20px;
+}
+
+.profile-info .username {
+    font-size: 18px;
+    font-weight: bold;
+    color: #043c3c;
+}
+
+.profile-info .handle {
+    font-size: 16px;
+    color: #666;
+}
+
+/* Follow and unfollow buttons */
+.buttons.has-addons {
+    display: flex;
+    justify-content: center;
+    align-items: center; 
+    gap: 15px;
+    padding: 15px; 
+    border-radius: 50px;
+    margin-top: 20px; 
+    width: fit-content; 
+    margin: 20px; 
+}
+
+.button.is-success {
+    background-color: #04cb95;
+    padding: 5px; 
+    border-radius: 50px;
+    color: white;
+}
+
+.button.is-success:hover {
+    background-color: #03a57a;
+    box-shadow: 0px 6px 12px rgba(0, 0, 0, 0.15);
+    transform: scale(1.05);
+}
+
+
+.button.is-danger {
+    background-color: #ff6b6b;
+    padding: 5px; 
+    border-radius: 50px;
+    color: white;
+}
+
+.button.is-danger:hover {
+    background-color: #bd4f4f;
+    box-shadow: 0px 6px 12px rgba(0, 0, 0, 0.15);
+    transform: scale(1.05);
+}
+
+.button.is-static {
+    background-color: #d3d3d3; /* Light grey background */
+    color: #888888; /* Grey text */
+    box-shadow: none; /* Remove shadow */
+    transform: none; /* Remove hover effects */
+}
+
+.button.is-static:hover {
+    background-color: #d3d3d3; /* Prevent hover from changing */
+    box-shadow: none;
+    transform: none;
+}

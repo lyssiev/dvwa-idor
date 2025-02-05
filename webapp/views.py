@@ -1,9 +1,10 @@
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.models import User
-from .models import Profile
+from .models import Profile, Post
 from django.contrib import messages
 from django.shortcuts import render, redirect
 from django.contrib.auth.decorators import login_required
+from .forms import PostForm
 
 def login_view(request):
     if request.method == 'POST':
@@ -29,7 +30,25 @@ def home_view(request):
     return render(request, 'home.html', {'profile': profile})
 
 def feed_view(request):
-    return render(request, 'feed.html')
+    if request.method == "POST":
+        form = PostForm(request.POST)
+        if form.is_valid():
+            post = form.save(commit=False)
+            post.user = request.user
+            post.save()
+            return redirect("feed")
+    form = PostForm()
+    
+    # Get user's posts
+    user_posts = Post.objects.filter(user=request.user)
+    # Get posts from followed users
+    followed_users = request.user.profile.follows.all()
+    followed_posts = Post.objects.filter(user__profile__in=followed_users)
+    # Combine 
+    all_posts = user_posts | followed_posts
+    all_posts = all_posts.order_by("-created_at") 
+
+    return render(request, "feed.html", {"form": form, "all_posts": all_posts})
 
 def register_view(request):
     if request.method == 'POST':
@@ -81,3 +100,4 @@ def profile(request, pk):
             current_user_profile.follows.remove(profile)
         current_user_profile.save()
     return render(request, "profile.html", {"profile": profile})
+

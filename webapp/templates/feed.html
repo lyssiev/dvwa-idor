@@ -10,6 +10,7 @@
     <link rel="stylesheet" href="{% static 'css/style.css' %}">
 </head>
 <body>
+
     <!-- Sidebar -->
     <div id="sidebar" class="sidebar">
         <button id="toggleBtn" class="toggle-btn">☰</button>
@@ -35,36 +36,58 @@
     </div>
 
     <!-- Main Content -->
+    <div class="main-content">
+        <div class="content-wrapper">
+            
+            <div class="feed-container">
+                <h2 class="text-center">Your Feed</h2>
+                <div class="feed-content">
+                    {% for post in all_posts %}
+                        <div class="post-item">
+                            <div class="post-header">
+                                <img src="{% static 'images/default-avatar.png' %}" alt="User Avatar" class="post-avatar">
+                                <div class="post-user-info">
+                                    <p class="username">{{ post.user.username }}</p>
+                                    <p class="handle">@{{ post.user.username|lower }}</p>
+                                </div>
+                            </div>
+                            <div class="post-body">
+                                <p>{{ post.body }}</p>
+                            </div>
+                            <div class="post-footer">
+                                <p class="timestamp">{{ post.created_at }}</p>
+                            </div>
+                        </div>
+                    {% empty %}
+                        <p class="text-center text-muted">No posts available.</p>
+                    {% endfor %}
+                </div>
+            </div>
+            
 
-        <div class="feed-container">
-            <h2 class="text-center">Your Feed</h2>
-            {% for profile in profiles %}
-            {% endfor %}
+            <!-- Post Box (Fixed on the Right) -->
+            <div class="post-box">
+                <div class="card shadow-sm">
+                    <div class="card-body">
+                        <h5 class="text-center">Write a Post</h5>
+                        <form method="post">
+                            {% csrf_token %}
+                            <textarea name="body" class="form-control post-input" placeholder="Post something..."></textarea>
+                            <button type="submit" class="btn btn-success w-100 rounded-pill mt-2">Submit</button>
+                        </form>                        
+                    </div>
+                </div>
+            </div>
+
         </div>
+    </div>
 
     <script>
-        const toggleBtn = document.getElementById('toggleBtn');
-        const sidebar = document.getElementById('sidebar');
-        const mainContent = document.querySelector('.main-content');
-        const topButtons = document.querySelector('.top-buttons');
-        const postsContainer = document.querySelector('.posts-container');
-
-        toggleBtn.addEventListener('click', () => {
-            // Toggle collapsed class for the sidebar
-            sidebar.classList.toggle('collapsed');
-
-            // Dynamically adjust the main content, top-buttons, and posts-container
-            if (sidebar.classList.contains('collapsed')) {
-                mainContent.classList.add('expanded');
-                topButtons.classList.add('expanded');
-                postsContainer.classList.add('expanded');
-            } else {
-                mainContent.classList.remove('expanded');
-                topButtons.classList.remove('expanded');
-                postsContainer.classList.remove('expanded');
-            } 
+        document.getElementById('toggleBtn').addEventListener('click', () => {
+            document.getElementById('sidebar').classList.toggle('collapsed');
+            document.querySelector('.main-content').classList.toggle('expanded');
         });
-    </script> 
+    </script>
 
 </body>
 </html>

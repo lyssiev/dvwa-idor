@@ -47,22 +47,22 @@
                     <a href="{% url 'following' profile.pk %}" class="btn btn-profile">Following</a>
                 </div>                
                 <div>
-                    <h4>{{ user.posts }}</h4>
+                    <h4>{{ user.posts.count }}</h4>
                     <p>posts</p>
                 </div>
             </div>
         </div>
 
-        <div class="posts-container">
-            <h2 class="text-center">POSTS</h2>
-            {% for post in posts %}
-            <div class="post">
-                <p>{{ post.content }}</p>
-            </div>
-            {% empty %}
-            <p class="text-center">No posts yet.</p>
-            {% endfor %}
+    <div class="posts-container">
+        <h2 class="text-center">Your Posts</h2>
+        {% for post in profile.user.posts.all %}
+        <div class="post">
+            <p>{{ post.body }}</p>
+            <p>({{ post.created_at }})</p>
         </div>
+        {% empty %}
+        <p class="text-center">No posts yet.</p>
+        {% endfor %}
     </div>
 
 <script>

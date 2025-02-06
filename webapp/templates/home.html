@@ -33,6 +33,10 @@
         <a href="{% url 'logout' %}" class="btn-top">Logout</a>
     </div>
 
+    <div class="settings-container">
+        <img src="{% static 'images/setting.png' %}" alt="Settings icon" class="settings-icon">
+    </div>
+
     <!-- Main Content -->
     <div class="main-content">
         <div class="profile-header text-center">
@@ -53,17 +57,20 @@
             </div>
         </div>
 
-    <div class="posts-container">
-        <h2 class="text-center">Your Posts</h2>
-        {% for post in profile.user.posts.all %}
-        <div class="post">
-            <p>{{ post.body }}</p>
-            <p>({{ post.created_at }})</p>
+        <div class="posts-container">
+            <h2 class="text-center">Your Posts</h2>
+            <div class="posts-scrollable overflow-auto p-3">
+                {% for post in profile.user.posts.all %}
+                <div class="post card shadow-sm p-3 mb-3">
+                    <p class="mb-1">{{ post.body }}</p>
+                    <p class="text-muted small">({{ post.created_at }})</p>
+                </div>
+                {% empty %}
+                <p class="text-center">No posts yet.</p>
+                {% endfor %}
+            </div>
         </div>
-        {% empty %}
-        <p class="text-center">No posts yet.</p>
-        {% endfor %}
-    </div>
+
 
 <script>
     const toggleBtn = document.getElementById('toggleBtn');

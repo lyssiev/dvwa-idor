@@ -71,15 +71,17 @@
         
 
         <div class="posts-container">
-            <h2 class="text-center">Posts</h2>
-            {% for post in profile.user.posts.all %}
-            <div class="post">
-                <p>{{ post.body }}</p>
-                <p>({{ post.created_at }})</p>
+            <div class="posts-scrollable overflow-auto p-3">
+                <h2 class="text-center">Posts</h2>
+                {% for post in profile.user.posts.all %}
+                <div class="post card shadow-sm p-3 mb-3">
+                    <p class="mb-1">{{ post.body }}</p>
+                    <p class="text-muted small">({{ post.created_at }})</p>
+                </div>
+                {% empty %}
+                <p class="text-center">No posts yet.</p>
+                {% endfor %}
             </div>
-            {% empty %}
-            <p class="text-center">No posts yet.</p>
-            {% endfor %}
         </div>
     </div>
 

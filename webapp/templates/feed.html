@@ -70,6 +70,13 @@
                 <div class="card shadow-sm">
                     <div class="card-body">
                         <h5 class="text-center">Write a Post</h5>
+
+                        {% if form.errors %}
+                        <div class="alert alert-danger" role="alert">
+                            {{ form.errors.body.as_text }}
+                        </div>
+                        {% endif %}
+
                         <form method="post">
                             {% csrf_token %}
                             <textarea name="body" class="form-control post-input" placeholder="Post something..."></textarea>

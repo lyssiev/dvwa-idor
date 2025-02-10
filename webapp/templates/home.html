@@ -34,8 +34,11 @@
     </div>
 
     <div class="settings-container">
-        <img src="{% static 'images/setting.png' %}" alt="Settings icon" class="settings-icon">
+        <a href="{% url 'user_settings' %}">
+            <img src="{% static 'images/setting.png' %}" alt="Settings icon" class="settings-icon">
+        </a>
     </div>
+
 
     <!-- Main Content -->
     <div class="main-content">

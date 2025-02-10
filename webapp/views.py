@@ -4,7 +4,7 @@ from .models import Profile, Post
 from django.contrib import messages
 from django.shortcuts import render, redirect
 from django.contrib.auth.decorators import login_required
-from .forms import PostForm
+from .forms import PostForm, PrivacyForm
 
 def login_view(request):
     if request.method == 'POST':
@@ -103,3 +103,15 @@ def profile(request, pk):
         current_user_profile.save()
     return render(request, "profile.html", {"profile": profile})
 
+@login_required
+def user_settings(request):
+    privacy_form = PrivacyForm(instance=request.user.profile)
+
+    if request.method == "POST":
+        privacy_form = PrivacyForm(request.POST, instance=request.user.profile)
+        if privacy_form.is_valid():
+            privacy_form.save()
+            messages.success(request, "Your privacy settings have been updated!")
+            return redirect("user_settings")
+
+    return render(request, "settings.html", {"privacy_form": privacy_form})

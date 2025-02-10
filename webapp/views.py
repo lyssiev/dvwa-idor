@@ -2,9 +2,9 @@ from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.models import User
 from .models import Profile, Post
 from django.contrib import messages
-from django.shortcuts import render, redirect
+from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth.decorators import login_required
-from .forms import PostForm, PrivacyForm
+from .forms import PostForm, PrivacyForm, CommentForm
 
 def login_view(request):
     if request.method == 'POST':
@@ -49,6 +49,8 @@ def feed_view(request):
     # Combine and order posts by most recent
     all_posts = (user_posts | followed_posts).order_by("-created_at")
 
+    print("Total posts:", all_posts.count())
+
     return render(request, "feed.html", {"form": form, "all_posts": all_posts})
 
 
@@ -73,8 +75,10 @@ def register_view(request):
     return render(request, 'register.html')
 
 def profile_list(request):
-    profiles = Profile.objects.exclude(user=request.user)
-    return render(request, "profile_list.html", {"profiles": profiles})
+    profiles = Profile.objects.exclude(user=request.user)  # Exclude logged-in user
+    followed_profiles = request.user.profile.follows.all()  # Get who the logged-in user follows
+    return render(request, "profile_list.html", {"profiles": profiles, "followed_profiles": followed_profiles})
+
 
 def following(request, pk):
     profile = Profile.objects.get(pk=pk)
@@ -83,7 +87,7 @@ def following(request, pk):
 
 def followers(request, pk):
     profile = Profile.objects.get(pk=pk)
-    followers = profile.follows.all()
+    followers = profile.followed_by.all()
     return render(request, "followers.html", {"profile": profile, "followers": followers})
 
 def profile(request, pk):
@@ -115,3 +119,26 @@ def user_settings(request):
             return redirect("user_settings")
 
     return render(request, "settings.html", {"privacy_form": privacy_form})
+
+@login_required
+def post_view(request, post_id):
+    post = get_object_or_404(Post, id=post_id)
+    comments = post.comments.all()
+
+    if request.method == "POST":
+        comment_form = CommentForm(request.POST)
+        if comment_form.is_valid():
+            comment = comment_form.save(commit=False)
+            user_id = request.POST.get("user_id")
+            print("User ID: ", user_id)
+            comment.user = User.objects.get(id=user_id)
+            comment.post = post
+            comment.save()
+            return redirect("post", post_id=post.id)
+        else:
+            print("Form errors:", comment_form.errors)  # Debugging
+
+    else:
+        comment_form = CommentForm()
+
+    return render(request, "post.html", {"post": post, "comments": comments, "comment_form": comment_form})

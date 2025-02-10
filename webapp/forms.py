@@ -20,14 +20,11 @@ class PrivacyForm(forms.ModelForm):
         fields = ['private']
 
 class CommentForm(forms.ModelForm):
-    body = forms.CharField(
-        required=True,
-        widget=forms.Textarea(attrs={"class": "form-control", "rows": 2, "placeholder": "Write a comment..."})
-    )
+    body = forms.CharField(required=True, max_length=140)
 
     class Meta:
         model = Comment
-        exclude = ("user", )
+        exclude = ("user", "post")
 
     def clean_body(self):
         body = self.cleaned_data.get('body')

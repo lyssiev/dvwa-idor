@@ -39,21 +39,12 @@
     <div class="main-content">
         <h2 class="text-center">All Users</h2>
         <div class="profile-list">
-            {% for profile in profiles %}
-                {% if profile.private %}
-                    <!-- Greyed-out profile (non-clickable) with Lock Icon -->
-                    <div class="profile-item private-profile">
-                        <img src="{% static 'images/default-avatar.png' %}" alt="User Avatar" class="profile-avatar">
-                        <div class="profile-info">
-                            <p class="username">{{ profile.user.username }}</p>
-                            <p class="handle">@{{ profile.user.username|lower }}</p>
-                        </div>
-                        <span class="private-badge"><i class="fas fa-lock"></i> Private</span>
-                    </div>
-                {% else %}
-                    <!-- Clickable public profile -->
+        {% for profile in profiles %}
+            {% if profile.private %}
+                {% if profile in followed_profiles %}
+                    <!-- Light Green for Private but Followed Profiles -->
                     <a href="{% url 'profile' profile.id %}" class="card-link">
-                        <div class="profile-item">
+                        <div class="profile-item private-following">
                             <img src="{% static 'images/default-avatar.png' %}" alt="User Avatar" class="profile-avatar">
                             <div class="profile-info">
                                 <p class="username">{{ profile.user.username }}</p>
@@ -61,10 +52,32 @@
                             </div>
                         </div>
                     </a>
+                {% else %}
+                    <!-- Light Red for Completely Private Profiles -->
+                    <div class="profile-item private-locked">
+                        <img src="{% static 'images/default-avatar.png' %}" alt="User Avatar" class="profile-avatar">
+                        <div class="profile-info">
+                            <p class="username">{{ profile.user.username }}</p>
+                            <p class="handle">@{{ profile.user.username|lower }}</p>
+                        </div>
+                        <span class="private-badge"><i class="fas fa-lock"></i> Private</span>
+                    </div>
                 {% endif %}
-            {% endfor %}
-        </div>
+            {% else %}
+                <!-- Clickable Public Profile -->
+                <a href="{% url 'profile' profile.id %}" class="card-link">
+                    <div class="profile-item">
+                        <img src="{% static 'images/default-avatar.png' %}" alt="User Avatar" class="profile-avatar">
+                        <div class="profile-info">
+                            <p class="username">{{ profile.user.username }}</p>
+                            <p class="handle">@{{ profile.user.username|lower }}</p>
+                        </div>
+                    </div>
+                </a>
+            {% endif %}
+        {% endfor %}
     </div>
+</div>
 
     <script>
         const toggleBtn = document.getElementById('toggleBtn');

@@ -322,7 +322,6 @@ body {
 
 .profile-item:hover {
     transform: scale(1.02);
-    /* Slight hover effect */
 }
 
 .profile-avatar {
@@ -343,12 +342,18 @@ body {
     color: #666;
 }
 
-.private-profile {
-    background-color: #e0e0e0;
-    color: #888;
+.private-following {
+    background-color: #b4e3bf !important;
+    border: 1px solid #c3e6cb !important;
+    pointer-events: auto;
+    opacity: 0.7;
+}
+
+.private-locked {
+    background-color: #f8d7da;
+    border: 1px solid #f5c6cb;
     pointer-events: none;
-    opacity: 0.6;
-    cursor: not-allowed;
+    opacity: 0.7;
 }
 
 .private-badge {
@@ -403,18 +408,13 @@ body {
 
 .button.is-static {
     background-color: #d3d3d3;
-    /* Light grey background */
     color: #888888;
-    /* Grey text */
     box-shadow: none;
-    /* Remove shadow */
     transform: none;
-    /* Remove hover effects */
 }
 
 .button.is-static:hover {
     background-color: #d3d3d3;
-    /* Prevent hover from changing */
     box-shadow: none;
     transform: none;
 }
@@ -446,7 +446,13 @@ body {
     border-radius: 15px;
     box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
     padding: 20px;
+    transition: transform 0.2s ease;
     margin-bottom: 15px;
+}
+
+.post-item:hover {
+    transform: scale(1.02);
+    box-shadow: 0px 6px 12px rgba(0, 0, 0, 0.15);
 }
 
 .post-header {

@@ -5,6 +5,7 @@ from django.contrib import messages
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth.decorators import login_required
 from .forms import PostForm, PrivacyForm, CommentForm
+from django.http import HttpResponseBadRequest
 
 def login_view(request):
     if request.method == 'POST':
@@ -124,21 +125,15 @@ def user_settings(request):
 def post_view(request, post_id):
     post = get_object_or_404(Post, id=post_id)
     comments = post.comments.all()
+    comment_form = CommentForm()  # ✅ Initialize the form for GET requests
 
     if request.method == "POST":
         comment_form = CommentForm(request.POST)
         if comment_form.is_valid():
             comment = comment_form.save(commit=False)
-            user_id = request.POST.get("user_id")
-            print("User ID: ", user_id)
-            comment.user = User.objects.get(id=user_id)
+            comment.user = request.user
             comment.post = post
             comment.save()
             return redirect("post", post_id=post.id)
-        else:
-            print("Form errors:", comment_form.errors)  # Debugging
-
-    else:
-        comment_form = CommentForm()
 
     return render(request, "post.html", {"post": post, "comments": comments, "comment_form": comment_form})

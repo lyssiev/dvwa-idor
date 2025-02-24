@@ -96,6 +96,7 @@ body {
 /* Top Buttons Styling */
 .top-buttons {
     position: fixed;
+    text-align: center;
     flex-direction: column;
     top: 20px;
     left: 320px;
@@ -103,6 +104,7 @@ body {
     gap: 15px;
     transition: left 0.3s ease;
 }
+
 
 .sidebar.collapsed~.top-buttons {
     left: 80px;

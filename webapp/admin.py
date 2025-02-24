@@ -7,7 +7,10 @@ class ProfileInline(admin.StackedInline):
 
 class UserAdmin(admin.ModelAdmin):
     model = User
-    fields = ["username"]
+    fields = ["username", "is_staff"]
+    list_display = ["username", "email", "is_staff"]
+    list_filter = ["is_staff"]
+    search_fields = ["username"]
     inlines = [ProfileInline]
 
 admin.site.unregister(User)

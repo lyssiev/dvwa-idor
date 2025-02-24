@@ -31,14 +31,23 @@
     <div class="top-buttons">
         <a href="{% url 'feed' %}" class="btn-top">Feed</a>
         <a href="{% url 'logout' %}" class="btn-top">Logout</a>
+        {% block content %}
+        {% if request.user == profile.user %}
+            {% if request.COOKIES.role == "moderator" %}
+                <a href="{% url 'moderator_dashboard' %}" class="btn-top">Moderator Dashboard</a>
+            {% endif %}
+        {% endif %}
+        {% endblock %}
     </div>
-
+    
     <div class="settings-container">
         <a href="{% url 'user_settings' %}">
             <img src="{% static 'images/setting.png' %}" alt="Settings icon" class="settings-icon">
         </a>
     </div>
 
+
+    
 
     <!-- Main Content -->
     <div class="main-content">

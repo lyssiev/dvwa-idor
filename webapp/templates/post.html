@@ -45,6 +45,7 @@
         <h5>Add a Comment</h5>
         <form method="post">
             {% csrf_token %}
+            <input type="hidden" name="user_id" value="{{ request.user.id }}">
             <textarea name="body" class="form-control" rows="3" placeholder="Write a comment..."></textarea>
             <button type="submit" class="btn btn-success mt-2">Post Comment</button>
         </form>

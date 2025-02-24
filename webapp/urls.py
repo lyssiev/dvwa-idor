@@ -13,5 +13,8 @@ urlpatterns = [
     path('followers/<int:pk>/', views.followers, name='followers'),
     path('profile/<int:pk>/', views.profile, name='profile'),
     path("post/<int:post_id>/", views.post_view, name="post"),
-    path('settings/', views.user_settings, name='user_settings')
+    path('settings/', views.user_settings, name='user_settings'),
+    path("moderator_dashboard/", views.moderator_dashboard, name="moderator_dashboard"),
+    path("delete_post/<int:post_id>/", views.delete_post, name="delete_post"),
+    path("edit_user/<int:user_id>/", views.edit_user, name="edit_user"),
 ]

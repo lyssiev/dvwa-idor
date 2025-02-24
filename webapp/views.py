@@ -5,20 +5,31 @@ from django.contrib import messages
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth.decorators import login_required
 from .forms import PostForm, PrivacyForm, CommentForm
-from django.http import HttpResponseBadRequest
+from django.http import HttpResponse, HttpResponseForbidden
 
 def login_view(request):
-    if request.method == 'POST':
-        username = request.POST['username']
-        password = request.POST['password']
+    if request.method == "POST":
+        username = request.POST.get("username")
+        password = request.POST.get("password")
         user = authenticate(request, username=username, password=password)
-        if user is not None:
-            login(request, user)
-            return redirect('home')
-        else:
-            messages.error(request, 'Invalid username or password')
 
-    return render(request, 'login.html')
+        if user:
+            login(request, user)
+            response = redirect("home")
+
+            # ✅ Only assign "moderator" role (no more admin role)
+            role = "moderator" if user.is_staff else "user"
+
+            print(f"🔍 Setting role cookie: {role}")  # Debugging output
+
+            response.set_cookie("role", role)  # 🚨 Still vulnerable to modification
+
+            return response
+        else:
+            messages.error(request, "Invalid username or password")
+
+    return render(request, "login.html")
+
 
 
 def logout_view(request):
@@ -27,8 +38,13 @@ def logout_view(request):
 
 @login_required
 def home_view(request):
+    """🚨 Vulnerable Home View - Uses a cookie to determine role instead of Django's authentication"""
     profile = Profile.objects.get(user=request.user)
-    return render(request, 'home.html', {'profile': profile})
+
+    role = request.COOKIES.get("role", "user")  # Default to "user"
+
+    return render(request, "home.html", {"profile": profile, "role": role})
+
 
 def feed_view(request):
     form = PostForm(request.POST or None)
@@ -130,10 +146,60 @@ def post_view(request, post_id):
     if request.method == "POST":
         comment_form = CommentForm(request.POST)
         if comment_form.is_valid():
+            user_id = request.POST.get("user_id")  # 🔴 No validation! Attacker can modify this.
+            user = get_object_or_404(User, id=user_id)  # Trusting the input (BAD)
+
             comment = comment_form.save(commit=False)
-            comment.user = request.user
+            comment.user = user  # 🔴 Setting user based on manipulated input
             comment.post = post
             comment.save()
             return redirect("post", post_id=post.id)
 
     return render(request, "post.html", {"post": post, "comments": comments, "comment_form": comment_form})
+
+# moderator views
+
+@login_required
+def moderator_dashboard(request):
+    """🚨 Vulnerable Moderator Dashboard - Uses a cookie instead of Django authentication"""
+    role = request.COOKIES.get("role", "user")
+
+    if role != "moderator":
+        return HttpResponseForbidden("Access Denied - Only Moderators Allowed!")
+
+    posts = Post.objects.all()
+    users = Profile.objects.all()
+
+    return render(request, "moderator_dashboard.html", {"posts": posts, "users": users})
+
+@login_required
+def edit_user(request, user_id):
+    """🚨 Vulnerable Moderator Action - Uses cookie-based authentication"""
+    role = request.COOKIES.get("role", "user")  # ❌ Attackers can modify this!
+
+    if role != "moderator":
+        return HttpResponseForbidden("❌ You do not have permission to edit users.")
+
+    user = get_object_or_404(User, id=user_id)
+
+    if request.method == "POST":
+        new_username = request.POST.get("new_username")
+        if new_username:
+            user.username = new_username
+            user.save()
+
+    return redirect("moderator_dashboard")
+
+
+@login_required
+def delete_post(request, post_id):
+    """🚨 Vulnerable Moderator Action - Uses cookie-based authentication to allow post deletion"""
+    role = request.COOKIES.get("role", "user")  # ❌ Attackers can modify this!
+
+    if role != "moderator":
+        return HttpResponseForbidden("❌ You do not have permission to delete posts.")
+
+    post = get_object_or_404(Post, id=post_id)
+    post.delete()
+    
+    return redirect("moderator_dashboard")

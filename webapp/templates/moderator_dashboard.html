@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Moderator Dashboard</title>
+    
+    <!-- ✅ Bootstrap CDN (for styling) -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    
+    <!-- ✅ Custom Styles (optional) -->
+    <style>
+        body {
+            background-color: #f8f9fa;
+        }
+        .card {
+            border-radius: 10px;
+        }
+        .list-group-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .gap-2 {
+            display: flex;
+            gap: 10px;
+        }
+    </style>
+</head>
+<body>
+
+
+    <div class="text-center mt-4">
+        <a href="{% url 'home' %}" class="btn btn-secondary">Back to Profile</a>
+    </div>
+
+    <div class="container mt-4">
+        <h2 class="text-center">Moderator Dashboard</h2>
+        <p class="text-center text-muted">Welcome! You can manage posts and users.</p>
+
+        <div class="card my-4">
+            <div class="card-header bg-danger text-white">
+                <h3>Delete Posts</h3>
+            </div>
+            <div class="card-body">
+                <ul class="list-group">
+                    {% for post in posts %}
+                        <li class="list-group-item">
+                            <span>{{ post.body }} - <strong>{{ post.user.username }}</strong></span>
+                            <form method="POST" action="{% url 'delete_post' post.id %}">
+                                {% csrf_token %}
+                                <button type="submit" class="btn btn-danger btn-sm">Delete</button>
+                            </form>
+                        </li>
+                    {% empty %}
+                        <p class="text-muted text-center">No posts available to delete.</p>
+                    {% endfor %}
+                </ul>
+            </div>
+        </div>
+
+        <div class="card my-4">
+            <div class="card-header bg-primary text-white">
+                <h3>Edit Users</h3>
+            </div>
+            <div class="card-body">
+                <ul class="list-group">
+                    {% for user in users %}
+                        <li class="list-group-item">
+                            <strong>{{ user.user.username }}</strong>
+                            <form method="POST" action="{% url 'edit_user' user.user.id %}" class="d-flex gap-2 mt-2">
+                                {% csrf_token %}
+                                <input type="text" name="new_username" class="form-control form-control-sm" placeholder="New username">
+                                <button type="submit" class="btn btn-primary btn-sm">Change Username</button>
+                            </form>
+                        </li>
+                    {% empty %}
+                        <p class="text-muted text-center">No users available for editing.</p>
+                    {% endfor %}
+                </ul>
+            </div>
+        </div>
+
+    </div>
+
+    <!-- ✅ Bootstrap JS (for mobile-friendly navbar toggling) -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+
+</body>
+</html>

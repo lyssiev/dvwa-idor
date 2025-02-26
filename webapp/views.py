@@ -203,3 +203,9 @@ def delete_post(request, post_id):
     post.delete()
     
     return redirect("moderator_dashboard")
+
+def disclaimer(request):
+    return render(request, 'disclaimer.html')
+
+def introduction(request):
+    return render(request, 'introduction.html')

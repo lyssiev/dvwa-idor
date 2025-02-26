@@ -17,4 +17,6 @@ urlpatterns = [
     path("moderator_dashboard/", views.moderator_dashboard, name="moderator_dashboard"),
     path("delete_post/<int:post_id>/", views.delete_post, name="delete_post"),
     path("edit_user/<int:user_id>/", views.edit_user, name="edit_user"),
+    path("disclaimer/", views.disclaimer, name="disclaimer"),
+    path("introduction/", views.introduction, name="intro"),
 ]

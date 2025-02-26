@@ -10,6 +10,8 @@
     <link rel="stylesheet" href="{% static 'css/style.css' %}">
 </head>
 <body>
+    {% include 'exercise_bar.html' %}
+
     <div class="container mt-5">
         <a href="{% url 'feed' %}" class="btn btn-secondary mb-3">Back to Feed</a>
 

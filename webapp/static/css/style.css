@@ -8,79 +8,9 @@ body {
     overflow-y: auto;
 }
 
-/* Sidebar Styling */
-.sidebar {
-    background-color: #043c3c;
-    color: white;
-    width: 300px;
-    height: 100vh;
-    padding: 20px;
-    position: fixed;
-    top: 0;
-    left: 0;
-    overflow-x: hidden;
-    transition: all 0.3s ease;
-    display: flex;
-    flex-direction: column;
-    align-items: flex-start;
-    border-radius: 0 15px 15px 0;
-    /* Rounded corners */
-}
-
-.sidebar.collapsed {
-    width: 60px;
-    padding: 10px;
-}
-
-.sidebar.collapsed .menu-items {
-    display: none;
-}
-
-.sidebar .toggle-btn {
-    background: none;
-    border: none;
-    color: white;
-    font-size: 20px;
-    cursor: pointer;
-    margin-bottom: 20px;
-}
-
-.sidebar.collapsed .toggle-btn {
-    text-align: center;
-    width: 100%;
-}
-
-/* Introduction Button */
-.btn-intro {
-    background-color: #04cb95;
-    color: white;
-    border: none;
-    border-radius: 50px;
-    padding: 10px 20px;
-    font-size: 16px;
-    text-align: center;
-    cursor: pointer;
-    transition: background-color 0.3s ease;
-}
-
-.btn-intro:hover {
-    background-color: #028f69;
-}
-
-/* Exercise List */
-.exercise-list {
-    list-style: none;
-    padding: 0;
-}
-
-.exercise-list li {
-    margin: 10px 0;
-    font-size: 16px;
-}
-
 /* Main Content Styling */
 .main-content {
-    margin-left: 320px;
+    margin-left: 80px;
     padding: 20px;
     flex-grow: 1;
     display: flex;
@@ -89,25 +19,16 @@ body {
     transition: margin-left 0.3s ease;
 }
 
-.main-content.expanded {
-    margin-left: 80px;
-}
-
 /* Top Buttons Styling */
 .top-buttons {
     position: fixed;
     text-align: center;
     flex-direction: column;
     top: 20px;
-    left: 320px;
+    left: 80px;
     display: flex;
     gap: 15px;
     transition: left 0.3s ease;
-}
-
-
-.sidebar.collapsed~.top-buttons {
-    left: 80px;
 }
 
 .btn-feed,
@@ -133,8 +54,8 @@ body {
 }
 
 .settings-icon {
-    width: 50px;
-    height: 50px;
+    width: 35px;
+    height: 35px;
     filter: invert(100%);
 }
 
@@ -440,7 +361,6 @@ body {
     max-width: 350px;
     position: sticky;
     top: 80px;
-    /* Ensures it stays visible when scrolling */
 }
 
 .post-item {
@@ -507,3 +427,109 @@ body {
 .btn-success:hover {
     background-color: #028f69;
 }
+
+
+
+/* Light Green for Elements */
+.bg-light-green {
+    background-color: #04cb95 !important;
+}
+
+/* Sidebar Styling */
+.bg-green {
+    background-color: #035b57 !important;
+}
+
+.sidebar {
+    width: 300px;
+    height: 100vh;
+    position: fixed;
+    top: 0;
+    left: 0;
+    border-radius: 0 15px 15px 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 20px;
+}
+
+/* Buttons Styling */
+.btn-custom {
+    background: linear-gradient(135deg, #04cb95, #039e72);
+    color: white;
+    border: none;
+    font-size: 14px;
+    padding: 10px 15px;
+    border-radius: 10px;
+    transition: all 0.3s ease;
+}
+
+.btn-custom:hover {
+    background: linear-gradient(135deg, #03a57a, #028f69);
+    transform: scale(1.05);
+}
+
+/* Exercise Buttons */
+.exercise-box {
+    background-color: #04cb95; 
+    border-radius: 15px;
+    box-shadow: 2px 2px 10px rgba(0, 0, 0, 0.1);
+    text-align: center;
+    padding: 20px;
+}
+
+.exercise-list button {
+    background: #f8f9fa;
+    color: #043c3c;
+    font-size: 14px;
+    padding: 8px;
+    border-radius: 8px;
+    text-align: center;
+    border: none;
+    transition: all 0.3s ease;
+    box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+.exercise-list button:hover {
+    background: #e0e0e0;
+    transform: translateY(-2px);
+}
+
+.completed-exercise {
+    background-color: #035b57 !important; 
+    color: white !important;
+}
+
+/* Progress Bar */
+.progress-bar {
+    background-color: #04cb95 !important;  /* ✅ Light Green */
+    transition: width 0.5s ease-in-out;
+}
+
+
+/* disclaimer css */
+
+.disclaimer-box {
+    background-color: white;
+    border-radius: 12px;
+    box-shadow: 0px 4px 12px rgba(0, 0, 0, 0.2);
+}
+
+.disclaimer-text {
+    color: #035b57;
+}
+
+.disclaimer-btn {
+    background-color: #04cb95;
+    color: white;
+    border-radius: 5px;
+    padding: 10px 20px;
+    text-decoration: none;
+    transition: background 0.3s ease-in-out;
+}
+
+.btn-exeter:hover {
+    background-color: #035b3f;
+}
+
+

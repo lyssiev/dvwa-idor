@@ -10,22 +10,8 @@
     <link rel="stylesheet" href="{% static 'css/style.css' %}">
 </head>
 <body>
-    <!-- Sidebar -->
-    <div id="sidebar" class="sidebar">
-        <button id="toggleBtn" class="toggle-btn">☰</button>
-        <div class="menu-items">
-            <h4 class="text-light mt-4">Welcome to the DVWA!</h4>
-            <button class="btn btn-intro w-100 mt-4">Introduction</button>
-            <h4 class="text-light mt-4">Exercises</h4>
-            <ul class="exercise-list">
-                {% for exercise in exercises %}
-                <li class="exercise-item">
-                    <a href="{{ exercise.url }}" class="text-light">{{ exercise.title }}</a>
-                </li>
-                {% endfor %}
-            </ul>
-        </div>
-    </div>
+
+{% include 'exercise_bar.html' %}
 
     <!-- Top Buttons -->
     <div class="top-buttons">
@@ -45,6 +31,7 @@
             <img src="{% static 'images/setting.png' %}" alt="Settings icon" class="settings-icon">
         </a>
     </div>
+
 
     <!-- Main Content -->
     <div class="main-content">
@@ -80,26 +67,5 @@
             </div>
         </div>
 
-
-<script>
-    const toggleBtn = document.getElementById('toggleBtn');
-    const sidebar = document.getElementById('sidebar');
-    const mainContent = document.querySelector('.main-content');
-    const topButtons = document.querySelector('.top-buttons');
-
-    toggleBtn.addEventListener('click', () => {
-        // Toggle collapsed class for the sidebar
-        sidebar.classList.toggle('collapsed');
-
-        // Dynamically adjust the main content margin
-        if (sidebar.classList.contains('collapsed')) {
-            mainContent.classList.add('expanded');
-            topButtons.classList.add('expanded');
-        } else {
-            mainContent.classList.remove('expanded');
-            topButtons.classList.remove('expanded');
-        }
-    });
-</script>
 </body>
 </html>

@@ -12,12 +12,21 @@
 <body>
     {% include 'exercise_bar.html' %}
 
-    <!-- Top Buttons -->
+    {% if flag %}
+        <div class="position-absolute top-0 end-0 p-3">
+            <div class="alert alert-success text-end shadow-lg">
+                <strong>Congratulations!</strong> You found the flag: <span class="fw-bold">{{ flag }}</span>
+            </div>
+        </div>
+    {% endif %}
+
+
+    <!-- Top Buttons --> 
     <div class="top-buttons">
         <a href="{% url 'profile_list' %}" class="btn-top">Back</a>
     </div>
 
-    <!-- Main Content -->
+    <!-- Main Content -->     
     <div class="main-content">
         <div class="profile-header text-center">
             <h1>{{profile.user.username}}</h1>

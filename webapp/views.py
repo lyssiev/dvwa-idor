@@ -1,11 +1,13 @@
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.models import User
-from .models import Profile, Post
+from .models import Profile, Post, Progress
+from django.http import JsonResponse
 from django.contrib import messages
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth.decorators import login_required
 from .forms import PostForm, PrivacyForm, CommentForm
 from django.http import HttpResponse, HttpResponseForbidden
+import requests
 
 def login_view(request):
     if request.method == "POST":
@@ -17,12 +19,12 @@ def login_view(request):
             login(request, user)
             response = redirect("home")
 
-            # ✅ Only assign "moderator" role (no more admin role)
+            # Only assign "moderator" role (no more admin role)
             role = "moderator" if user.is_staff else "user"
 
             print(f"🔍 Setting role cookie: {role}")  # Debugging output
 
-            response.set_cookie("role", role)  # 🚨 Still vulnerable to modification
+            response.set_cookie("role", role)  # vulnerable to cookie manipulation
 
             return response
         else:
@@ -43,7 +45,19 @@ def home_view(request):
 
     role = request.COOKIES.get("role", "user")  # Default to "user"
 
-    return render(request, "home.html", {"profile": profile, "role": role})
+    flag_ex2 = None
+    FLAG_API_URL = "https://api-dvwa.onrender.com/api/get_flag"
+
+    if role == "moderator":
+        try:
+            response = requests.post(FLAG_API_URL, json={"exercise": "2"})
+            if response.status_code == 200:
+                flag_ex2 = response.json().get("flag", None)
+
+        except requests.exceptions.RequestException as e:
+            print(f"Error fetching flag: {e}")
+
+    return render(request, "home.html", {"profile": profile, "role": role, "flag_ex2": flag_ex2})
 
 
 def feed_view(request):
@@ -112,7 +126,19 @@ def profile(request, pk):
         missing_profile = Profile(user=request.user)
         missing_profile.save()
 
-    profile = Profile.objects.get(pk=pk)
+    profile = get_object_or_404(Profile, pk=pk)
+    flag = None
+
+    if profile.private and request.user != profile.user:
+        try:
+            response = requests.post("https://api-dvwa.onrender.com/api/get_flag", json={"exercise": "1"})
+            print(f"API Response: {response.status_code}")
+            print(f"API Response: {response.json()}")
+            if response.status_code == 200:
+                flag = response.json().get("flag")
+        except requests.exceptions.RequestException as e:
+            print(f"Error fetching flag: {e}")
+
     if request.method == "POST":
         current_user_profile = request.user.profile
         data = request.POST
@@ -122,7 +148,8 @@ def profile(request, pk):
         elif action == "unfollow":
             current_user_profile.follows.remove(profile)
         current_user_profile.save()
-    return render(request, "profile.html", {"profile": profile})
+    
+    return render(request, "profile.html", {"profile": profile, "flag": flag})
 
 @login_required
 def user_settings(request):
@@ -137,31 +164,45 @@ def user_settings(request):
 
     return render(request, "settings.html", {"privacy_form": privacy_form})
 
+
+FLAG_API_URL = "https://api-dvwa.onrender.com/api/get_flag"
+
 @login_required
 def post_view(request, post_id):
     post = get_object_or_404(Post, id=post_id)
     comments = post.comments.all()
-    comment_form = CommentForm()  # ✅ Initialize the form for GET requests
+    comment_form = CommentForm()
+    
+    flag_ex3 = request.session.pop("flag_ex3", None)  # retrieve flag from session if set
 
     if request.method == "POST":
         comment_form = CommentForm(request.POST)
         if comment_form.is_valid():
-            user_id = request.POST.get("user_id")  # 🔴 No validation! Attacker can modify this.
+            user_id = request.POST.get("user_id")  # No validation so attacker can modify this.
             user = get_object_or_404(User, id=user_id)  # Trusting the input (BAD)
 
             comment = comment_form.save(commit=False)
-            comment.user = user  # 🔴 Setting user based on manipulated input
+            comment.user = user # attacker can change user
             comment.post = post
             comment.save()
-            return redirect("post", post_id=post.id)
 
-    return render(request, "post.html", {"post": post, "comments": comments, "comment_form": comment_form})
+            if user_id and str(request.user.id) != user_id:
+                try:
+                    response = requests.post(FLAG_API_URL, json={"exercise": "3"})
+                    if response.status_code == 200:
+                        request.session["flag_ex3"] = response.json().get("flag", None) # store flag in session
+                except requests.exceptions.RequestException as e:
+                    print(f"Error fetching flag: {e}")
+
+            return redirect("post", post_id=post.id)
+    return render(request, "post.html", {"post": post, "comments": comments, "comment_form": comment_form, "flag_ex3": flag_ex3})
+
 
 # moderator views
 
 @login_required
 def moderator_dashboard(request):
-    """🚨 Vulnerable Moderator Dashboard - Uses a cookie instead of Django authentication"""
+    """ Uses a cookie instead of Django authentication"""
     role = request.COOKIES.get("role", "user")
 
     if role != "moderator":
@@ -174,11 +215,10 @@ def moderator_dashboard(request):
 
 @login_required
 def edit_user(request, user_id):
-    """🚨 Vulnerable Moderator Action - Uses cookie-based authentication"""
-    role = request.COOKIES.get("role", "user")  # ❌ Attackers can modify this!
+    role = request.COOKIES.get("role", "user")  # Attackers can modify this!
 
     if role != "moderator":
-        return HttpResponseForbidden("❌ You do not have permission to edit users.")
+        return HttpResponseForbidden("You do not have permission to edit users.")
 
     user = get_object_or_404(User, id=user_id)
 
@@ -194,10 +234,10 @@ def edit_user(request, user_id):
 @login_required
 def delete_post(request, post_id):
     """🚨 Vulnerable Moderator Action - Uses cookie-based authentication to allow post deletion"""
-    role = request.COOKIES.get("role", "user")  # ❌ Attackers can modify this!
+    role = request.COOKIES.get("role", "user")  # Attackers can modify this!
 
     if role != "moderator":
-        return HttpResponseForbidden("❌ You do not have permission to delete posts.")
+        return HttpResponseForbidden(" You do not have permission to delete posts.")
 
     post = get_object_or_404(Post, id=post_id)
     post.delete()
@@ -209,3 +249,15 @@ def disclaimer(request):
 
 def introduction(request):
     return render(request, 'introduction.html')
+
+@login_required
+def update_progress(request):
+    if request.method == "POST":
+        progress, created = Progress.objects.get_or_create(user=request.user)
+        data = request.POST
+        exercise_number = int(data.get("exercise"))
+        if exercise_number not in progress.completed_exercises:
+            progress.completed_exercises.append(exercise_number)
+            progress.save()
+
+        return JsonResponse({"completed_exercises": progress.completed_exercises})

@@ -12,6 +12,15 @@
 <body>
     {% include 'exercise_bar.html' %}
 
+    {% if flag_ex3 %}
+    <div class="position-absolute top-0 end-0 p-3">
+        <div class="alert alert-success text-end shadow-lg">
+            <strong>Congratulations!</strong> You found the flag for Exercise 3: <span class="fw-bold">{{ flag_ex3 }}</span>
+        </div>
+    </div>
+    {% endif %}
+
+
     <div class="container mt-5">
         <a href="{% url 'feed' %}" class="btn btn-secondary mb-3">Back to Feed</a>
 

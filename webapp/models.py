@@ -49,3 +49,7 @@ class Comment(models.Model):
     def __str__(self):
         return f"Comment by {self.user.username} on {self.post.id}"
     
+
+class Progress(models.Model):
+    user = models.OneToOneField(User, on_delete=models.CASCADE)
+    completed_exercises = models.IntegerField(default=0)

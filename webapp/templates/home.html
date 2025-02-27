@@ -11,7 +11,16 @@
 </head>
 <body>
 
-{% include 'exercise_bar.html' %}
+    {% include 'exercise_bar.html' %}
+
+    {% if flag_ex2 %}
+        <div class="position-absolute top-0 end-0 p-3 padding-10">
+            <div class="alert alert-success text-end shadow-lg">
+                <strong>Congratulations!</strong> You found the flag for Exercise 2: <span class="fw-bold">{{ flag_ex2 }}</span>
+            </div>
+        </div>
+    {% endif %}
+
 
     <!-- Top Buttons -->
     <div class="top-buttons">

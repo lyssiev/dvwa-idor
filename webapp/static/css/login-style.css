@@ -1,4 +1,5 @@
-/* General Styles */
+/* Styling for the login and register page */
+
 body {
     background-color: #f5f5f5;
     font-family: 'Nunito', sans-serif;
@@ -8,10 +9,8 @@ body {
     overflow: hidden;
 }
 
-
-/* Content Styling */
 .content {
-    margin-left: 80px; /* Matches the expanded sidebar width */
+    margin-left: 80px; 
     padding: 20px;
     flex-grow: 1;
     display: flex;
@@ -20,14 +19,11 @@ body {
 
 }
 
-
-
-/* Login Form Styling */
 .login-form {
     background: white;
     padding: 30px;
-    border-radius: 20px; /* More rounded */
-    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2); /* Subtle shadow */
+    border-radius: 20px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
     max-width: 400px;
     width: 100%;
     text-align: center;
@@ -42,7 +38,7 @@ body {
     background-color: #04cb95;
     border: none;
     transition: 0.3s;
-    border-radius: 50px; /* Rounded buttons */
+    border-radius: 50px; 
 }
 
 .btn-primary:hover {
@@ -54,7 +50,7 @@ body {
     background-color: #043c3c;
     color: white;
     transition: 0.3s;
-    border-radius: 50px; /* Rounded buttons */
+    border-radius: 50px; 
 }
 
 .btn-snd:hover {

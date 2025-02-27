@@ -1,3 +1,5 @@
+<!-- Exercise Bar - reused on each page -->
+
 {% load static %}
 
 <head>
@@ -6,36 +8,38 @@
 </head>
 
 
-<body><!-- Sidebar Toggle Button (Small Section on the Right) -->
+<body>
+
+<!-- Toggle for sidebar -->
 <button id="sidebarToggle" class="btn bg-green btn-dark sidebar-toggle" type="button" data-bs-toggle="offcanvas" data-bs-target="#sidebar" aria-controls="sidebar">
     ☰
 </button>
 
-<!-- Collapsible Sidebar (Bootstrap Offcanvas) -->
+<!-- Sidebar -->
 <div class="offcanvas offcanvas-start sidebar bg-green text-white rounded-3 shadow-lg" tabindex="-1" id="sidebar" data-bs-backdrop="false">
     <div class="offcanvas-header">
         <h4 class="offcanvas-title fw-bold">Welcome to the DVWA!</h4>
         <button type="button" class="btn-close btn-close-white" data-bs-dismiss="offcanvas" aria-label="Close"></button>
     </div>
+    <!-- Disclaimer and introduction buttons -->
     <div class="offcanvas-body d-flex flex-column align-items-center">
-        <!-- Disclaimer & Introduction Buttons -->
         <div class="d-grid gap-2 w-100">
-            <a href="{% url 'disclaimer' %}" class="btn btn-light text-dark fw-medium rounded">Disclaimer</a>
+            <button id="resetProgressBtn" class="btn btn-danger mt-3">Reset Progress</button> <!-- DELETE LATER -->
+            <a href="{% url 'disclaimer' %}" class="btn btn-light text-dark fw-medium rounded">Disclaimer</a> 
             <a href="{% url 'intro' %}" class="btn btn-light text-dark fw-medium rounded">Introduction</a>
         </div>
 
-        <!-- Exercise Buttons -->
+        <!-- Exercise buttons -->
         <h5 class="mt-4">Exercises:</h5>
         <div class="exercise-box d-grid gap-2 w-100 mt-3">
-            <button id="1" class="btn btn-outline-light w-100 rounded" onclick="showExercise(1)">Exercise 1</button>
-            <button id="2" class="btn btn-outline-light w-100 rounded" onclick="showExercise(2)">Exercise 2</button>
-            <button id="3" class="btn btn-outline-light w-100 rounded" onclick="showExercise(3)">Exercise 3</button>
-            <button id="4" class="btn btn-outline-light w-100 rounded" onclick="showExercise(4)">Exercise 4</button>
-            <button id="5" class="btn btn-outline-light w-100 rounded" onclick="showExercise(5)">Exercise 5</button>
+            <button id="exercise1" class="btn btn-outline-light w-100 rounded" onclick="showExercise(1)">Exercise 1</button>
+            <button id="exercise2" class="btn btn-outline-light w-100 rounded" onclick="showExercise(2)">Exercise 2</button>
+            <button id="exercise3" class="btn btn-outline-light w-100 rounded" onclick="showExercise(3)">Exercise 3</button>
+            <button id="exercise4" class="btn btn-outline-light w-100 rounded" onclick="showExercise(4)">Exercise 4</button>
+            <button id="exercise5" class="btn btn-outline-light w-100 rounded" onclick="showExercise(5)">Exercise 5</button>
         </div>
         
-
-        <!-- Flag Input -->
+        <!-- Flag input -->
         <div class="flag-section">
             <h5 class="mt-4">Enter Flags:</h5>
             <div class="input-group w-100">
@@ -47,7 +51,7 @@
             <p id="flagMessage" class="mt-2"></p>
         </div>        
 
-        <!-- Progress Bar -->
+        <!-- Progress bar -->
         <h5 class="mt-4">Progress</h5>
         <div class="progress w-100 rounded-pill">
             <div class="progress-bar progress-bar-striped progress-bar-animated bg-light" id="progressBar" role="progressbar" style="width: 0%;" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100"></div>
@@ -55,7 +59,7 @@
     </div>
 </div>
 
-<!-- Exercise 1 Modal -->
+<!-- Exercise 1 Popup -->
 <div class="modal fade" id="exercise1Modal" tabindex="-1" aria-labelledby="exercise1Label" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered">
         <div class="modal-content">
@@ -70,7 +74,7 @@
     </div>
 </div>
 
-<!-- Exercise 2 Modal -->
+<!-- Exercise 2 Popup -->
 <div class="modal fade" id="exercise2Modal" tabindex="-1" aria-labelledby="exercise2Label" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered">
         <div class="modal-content">
@@ -85,7 +89,7 @@
     </div>
 </div>
 
-<!-- Exercise 3 Modal -->
+<!-- Exercise 3 Popup -->
 <div class="modal fade" id="exercise3Modal" tabindex="-1" aria-labelledby="exercise3Label" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered">
         <div class="modal-content">
@@ -100,7 +104,7 @@
     </div>
 </div>
 
-<!-- Exercise 4 Modal -->
+<!-- Exercise 4 Popup -->
 <div class="modal fade" id="exercise4Modal" tabindex="-1" aria-labelledby="exercise4Label" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered">
         <div class="modal-content">
@@ -115,7 +119,7 @@
     </div>
 </div>
 
-<!-- Exercise 5 Modal -->
+<!-- Exercise 5 Popup -->
 <div class="modal fade" id="exercise5Modal" tabindex="-1" aria-labelledby="exercise5Label" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered">
         <div class="modal-content">
@@ -130,5 +134,8 @@
     </div>
 </div>
 
+<!-- Javascript -->
 <script src="{% static 'js/flags.js' %}"></script>
+<script src="{% static 'js/progress.js' %}"></script>
+
 </body>

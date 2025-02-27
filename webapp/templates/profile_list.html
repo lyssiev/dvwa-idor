@@ -13,20 +13,20 @@
 <body>
     {% include 'exercise_bar.html' %}
 
-    <!-- Top Buttons -->
+    <!-- Top buttons -->
     <div class="top-buttons">
         <a href="{% url 'feed' %}" class="btn-top">Feed</a>
         <a href="{% url 'logout' %}" class="btn-top">Logout</a>
     </div>
 
-    <!-- Main Content -->
+    <!-- Main content -->
     <div class="main-content">
         <h2 class="text-center">All Users</h2>
         <div class="profile-list">
+        <!-- Unlocked vs Locked private profiles -->
         {% for profile in profiles %}
             {% if profile.private %}
                 {% if profile in followed_profiles %}
-                    <!-- Light Green for Private but Followed Profiles -->
                     <a href="{% url 'profile' profile.id %}" class="card-link">
                         <div class="profile-item private-following">
                             <img src="{% static 'images/default-avatar.png' %}" alt="User Avatar" class="profile-avatar">
@@ -38,7 +38,6 @@
                         </div>
                     </a>
                 {% else %}
-                    <!-- Light Red for Completely Private Profiles -->
                     <div class="profile-item private-locked">
                         <img src="{% static 'images/default-avatar.png' %}" alt="User Avatar" class="profile-avatar">
                         <div class="profile-info">
@@ -49,7 +48,7 @@
                     </div>
                 {% endif %}
             {% else %}
-                <!-- Clickable Public Profile -->
+        <!-- Public profiles -->
                 <a href="{% url 'profile' profile.id %}" class="card-link">
                     <div class="profile-item">
                         <img src="{% static 'images/default-avatar.png' %}" alt="User Avatar" class="profile-avatar">

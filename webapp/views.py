@@ -32,15 +32,13 @@ def login_view(request):
 
     return render(request, "login.html")
 
-
-
 def logout_view(request):
     logout(request)
     return redirect('login')
 
 @login_required
 def home_view(request):
-    """🚨 Vulnerable Home View - Uses a cookie to determine role instead of Django's authentication"""
+    """ Vulnerable Home View - Uses a cookie to determine role instead of Django's authentication"""
     profile = Profile.objects.get(user=request.user)
 
     role = request.COOKIES.get("role", "user")  # Default to "user"
@@ -233,7 +231,7 @@ def edit_user(request, user_id):
 
 @login_required
 def delete_post(request, post_id):
-    """🚨 Vulnerable Moderator Action - Uses cookie-based authentication to allow post deletion"""
+    """ Vulnerable Moderator Action - Uses cookie-based authentication to allow post deletion"""
     role = request.COOKIES.get("role", "user")  # Attackers can modify this!
 
     if role != "moderator":
@@ -261,3 +259,37 @@ def update_progress(request):
             progress.save()
 
         return JsonResponse({"completed_exercises": progress.completed_exercises})
+    
+
+@login_required
+def get_progress(request):
+    progress, created = Progress.objects.get_or_create(user=request.user)
+    return JsonResponse({
+        "completed_exercises": progress.get_completed_exercises(),
+        "progress": progress.progress_percentage()
+    })
+
+@login_required
+def update_progress(request):
+    if request.method == "POST":
+        progress, created = Progress.objects.get_or_create(user=request.user)
+        exercise_number = int(request.POST.get("exercise"))
+
+        progress.add_exercise(exercise_number) 
+
+        return JsonResponse({
+            "completed_exercises": progress.get_completed_exercises(),
+            "progress": progress.progress_percentage()
+        })
+        
+@login_required
+def reset_progress(request):
+    """Resets the user's progress by clearing completed exercises from the database."""
+    user = request.user
+    try:
+        progress = Progress.objects.get(user=user)
+        progress.completed_exercises = []
+        progress.save()
+        return JsonResponse({"message": "Progress reset successfully!", "status": "success"})
+    except Progress.DoesNotExist:
+        return JsonResponse({"message": "No progress found to reset.", "status": "error"})

@@ -1,6 +1,7 @@
 from django import forms
 from .models import Post, Profile, Comment
 
+# Form for creating a new post
 class PostForm(forms.ModelForm):
     body = forms.CharField(required=True)
 
@@ -13,12 +14,14 @@ class PostForm(forms.ModelForm):
         if len(body) > 140:
             raise forms.ValidationError("Your post cannot have more than 140 characters.")
         return body
-    
+
+# Form for editing user privacy settings
 class PrivacyForm(forms.ModelForm):
     class Meta:
         model = Profile
         fields = ['private']
 
+# Form for adding comments
 class CommentForm(forms.ModelForm):
     body = forms.CharField(required=True, max_length=140)
 

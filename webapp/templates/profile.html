@@ -1,3 +1,5 @@
+<!-- Profile of each user on the site -->
+
 {% load static %}
 <!DOCTYPE html>
 <html lang="en">
@@ -12,6 +14,7 @@
 <body>
     {% include 'exercise_bar.html' %}
 
+    <!-- Displays flag for ex1 -->
     {% if flag %}
         <div class="position-absolute top-0 end-0 p-3">
             <div class="alert alert-success text-end shadow-lg">
@@ -21,12 +24,12 @@
     {% endif %}
 
 
-    <!-- Top Buttons --> 
+    <!-- Top buttons --> 
     <div class="top-buttons">
         <a href="{% url 'profile_list' %}" class="btn-top">Back</a>
     </div>
 
-    <!-- Main Content -->     
+    <!-- Main content -->     
     <div class="main-content">
         <div class="profile-header text-center">
             <h1>{{profile.user.username}}</h1>
@@ -46,24 +49,25 @@
             </div>
         </div>
 
+        <!-- Following and unfollowing functionality -->
         <form method="post">
             {% csrf_token %}
             <div class="buttons has-addons">
             {% if profile in user.profile.follows.all %}
-                <button class="button is-success is-static">Follow</button>
-                <button class="button is-danger" name="follow" value="unfollow">
+                <button class="button follow is-static">Follow</button>
+                <button class="button unfollow" name="follow" value="unfollow">
                     Unfollow
                 </button>
             {% else %}
-                <button class="button is-success" name="follow" value="follow">
+                <button class="button follow" name="follow" value="follow">
                     Follow
                 </button>
-                <button class="button is-danger is-static">Unfollow</button>
+                <button class="button unfollow is-static">Unfollow</button>
             {% endif %}
             </div>
         </form>
         
-
+        <!-- Displays posts the user has published -->
         <div class="posts-container">
             <div class="posts-scrollable overflow-auto p-3">
                 <h2 class="text-center">Posts</h2>

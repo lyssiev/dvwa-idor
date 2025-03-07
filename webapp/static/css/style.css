@@ -55,8 +55,18 @@ body {
     right: 20px;
     z-index: 100;
     background-color: #04cb95;
-    border-radius: 50%;
     padding: 5px;
+    border-radius: 5px;
+}
+
+.settings-btn {
+    background-color: #04cb95;
+    color: white;
+}
+
+.settings-btn:hover {
+    background-color: #068d69;
+    color: white;
 }
 
 .settings-icon {
@@ -452,21 +462,6 @@ body {
     padding: 20px;
 }
 
-/* extra button styles */
-.btn-custom {
-    background: linear-gradient(135deg, #04cb95, #039e72);
-    color: white;
-    border: none;
-    font-size: 14px;
-    padding: 10px 15px;
-    border-radius: 10px;
-    transition: all 0.3s ease;
-}
-
-.btn-custom:hover {
-    background: linear-gradient(135deg, #03a57a, #028f69);
-    transform: scale(1.05);
-}
 
 /* Exercise bar styling */
 

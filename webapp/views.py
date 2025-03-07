@@ -8,6 +8,7 @@ from django.contrib.auth.decorators import login_required
 from .forms import PostForm, PrivacyForm, CommentForm
 from django.http import HttpResponse, HttpResponseForbidden
 import requests
+import json
 
 def login_view(request):
     if request.method == "POST":
@@ -21,8 +22,6 @@ def login_view(request):
 
             # Only assign "moderator" role (no more admin role)
             role = "moderator" if user.is_staff else "user"
-
-            print(f"🔍 Setting role cookie: {role}")  # Debugging output
 
             response.set_cookie("role", role)  # vulnerable to cookie manipulation
 
@@ -152,6 +151,8 @@ def profile(request, pk):
 @login_required
 def user_settings(request):
     privacy_form = PrivacyForm(instance=request.user.profile)
+    user = request.user
+    profile = user.profile
 
     if request.method == "POST":
         privacy_form = PrivacyForm(request.POST, instance=request.user.profile)
@@ -159,6 +160,7 @@ def user_settings(request):
             privacy_form.save()
             messages.success(request, "Your privacy settings have been updated!")
             return redirect("user_settings")
+    
 
     return render(request, "settings.html", {"privacy_form": privacy_form})
 
@@ -169,7 +171,7 @@ FLAG_API_URL = "https://api-dvwa.onrender.com/api/get_flag"
 def post_view(request, post_id):
     post = get_object_or_404(Post, id=post_id)
     comments = post.comments.all()
-    comment_form = CommentForm()
+    comment_form = CommentForm()  
     
     flag_ex3 = request.session.pop("flag_ex3", None)  # retrieve flag from session if set
 
@@ -293,3 +295,34 @@ def reset_progress(request):
         return JsonResponse({"message": "Progress reset successfully!", "status": "success"})
     except Progress.DoesNotExist:
         return JsonResponse({"message": "No progress found to reset.", "status": "error"})
+    
+@login_required
+def reset_password_view(request):
+    data = json.loads(request.body)
+    user_id = data.get("user_id")
+    new_password = data.get("new_password")
+
+    # send a request to the api to reset the password
+    flask_response = requests.post('http://127.0.0.1:5000/api/reset_password', json={
+        "user_id": user_id,
+        "new_password": new_password
+    }).json()
+
+
+    # get the flag for exercise 5 if the user is not the same as the one resetting the password
+    flag_ex5 = None
+    if str(request.user.id) != str(user_id):
+        flag_response = requests.post("https://api-dvwa.onrender.com/api/get_flag", json={"exercise": "5"})
+        if flag_response.status_code == 200:
+            flag_ex5 = flag_response.json().get("flag")
+        else:
+            flag_ex5 = None
+    else:
+        flag_ex5 = None
+
+    # return the flag from the api
+    return JsonResponse({
+        "message": flask_response.get("message"),
+        "status": flask_response.get("status"),
+        "flag": flag_ex5
+    })

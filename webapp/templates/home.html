@@ -32,8 +32,10 @@
         <a href="{% url 'logout' %}" class="btn-top">Logout</a>
         {% block content %}
         {% if request.user == profile.user %}
-            {% if request.COOKIES.role == "moderator" %}
-                <a href="{% url 'moderator_dashboard' %}" class="btn-top">Moderator Dashboard</a> 
+            {% if request.COOKIES.role and request.COOKIES.role|length == 64 %}
+                {% if request.COOKIES.role == 'cfde2ca5188afb7bdd0691c7bef887baba78b709aadde8e8c535329d5751e6fe' %}
+                    <a href="{% url 'moderator_dashboard' %}" class="btn-top">Moderator Dashboard</a>
+                {% endif %}
             {% endif %}
         {% endif %}
         {% endblock %}

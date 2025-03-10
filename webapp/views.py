@@ -9,6 +9,8 @@ from .forms import PostForm, PrivacyForm, CommentForm
 from django.http import HttpResponse, HttpResponseForbidden
 import requests
 import json
+import base64
+import hashlib
 
 def login_view(request):
     if request.method == "POST":
@@ -23,6 +25,8 @@ def login_view(request):
             # Only assign "moderator" role (no more admin role)
             role = "moderator" if user.is_staff else "user"
 
+            print(f"🔍 Setting role cookie: {role}")  # Debugging output
+
             response.set_cookie("role", role)  # vulnerable to cookie manipulation
 
             return response
@@ -35,26 +39,41 @@ def logout_view(request):
     logout(request)
     return redirect('login')
 
+#TODO
 @login_required
 def home_view(request):
-    """ Vulnerable Home View - Uses a cookie to determine role instead of Django's authentication"""
+    """ Vulnerable Home View - Uses a SHA256-encoded cookie to determine role instead of Django's authentication """
+
     profile = Profile.objects.get(user=request.user)
 
-    role = request.COOKIES.get("role", "user")  # Default to "user"
+    # Default role is "user", hashed with SHA256
+    default_role_hashed = hashlib.sha256("user".encode()).hexdigest()
+    hashed_role = request.COOKIES.get("role", default_role_hashed)
+
+    # Try to decode the SHA256 role safely
+    role = "user"  # Fallback to a safe default
+    if hashed_role == hashlib.sha256("moderator".encode()).hexdigest():
+        role = "moderator"
 
     flag_ex2 = None
     FLAG_API_URL = "https://api-dvwa.onrender.com/api/get_flag"
 
+    # If the role is moderator, fetch the flag
     if role == "moderator":
         try:
             response = requests.post(FLAG_API_URL, json={"exercise": "2"})
             if response.status_code == 200:
                 flag_ex2 = response.json().get("flag", None)
-
         except requests.exceptions.RequestException as e:
             print(f"Error fetching flag: {e}")
 
-    return render(request, "home.html", {"profile": profile, "role": role, "flag_ex2": flag_ex2})
+    response = render(request, "home.html", {"profile": profile, "role": role, "flag_ex2": flag_ex2})
+
+    # Ensure the cookie is always stored as SHA256 hash
+    hashed_role = hashlib.sha256(role.encode()).hexdigest()
+    response.set_cookie("role", hashed_role)
+
+    return response
 
 
 def feed_view(request):
@@ -86,6 +105,7 @@ def register_view(request):
     if request.method == 'POST':
         username = request.POST['username']
         password = request.POST['password']
+        email = request.POST['email']
         confirm_password = request.POST['confirm_password']
 
         if password != confirm_password:
@@ -94,9 +114,13 @@ def register_view(request):
 
         if User.objects.filter(username=username).exists():
             messages.error(request, "Username already taken.")
-            return render(request, 'register.html')
+            return render(request, "register.html")
 
-        User.objects.create_user(username=username, password=password)
+        if User.objects.filter(email=email).exists():
+            messages.error(request, "Email already registered.")
+            return render(request, "register.html")
+
+        User.objects.create_user(username=username, email=email,password=password)
         messages.success(request, "Account created successfully! Please log in.")
         return redirect('login')
 
@@ -151,8 +175,6 @@ def profile(request, pk):
 @login_required
 def user_settings(request):
     privacy_form = PrivacyForm(instance=request.user.profile)
-    user = request.user
-    profile = user.profile
 
     if request.method == "POST":
         privacy_form = PrivacyForm(request.POST, instance=request.user.profile)
@@ -160,7 +182,6 @@ def user_settings(request):
             privacy_form.save()
             messages.success(request, "Your privacy settings have been updated!")
             return redirect("user_settings")
-    
 
     return render(request, "settings.html", {"privacy_form": privacy_form})
 
@@ -171,7 +192,7 @@ FLAG_API_URL = "https://api-dvwa.onrender.com/api/get_flag"
 def post_view(request, post_id):
     post = get_object_or_404(Post, id=post_id)
     comments = post.comments.all()
-    comment_form = CommentForm()  
+    comment_form = CommentForm()
     
     flag_ex3 = request.session.pop("flag_ex3", None)  # retrieve flag from session if set
 
@@ -199,7 +220,7 @@ def post_view(request, post_id):
 
 
 # moderator views
-
+#TODO
 @login_required
 def moderator_dashboard(request):
     """ Uses a cookie instead of Django authentication"""
@@ -213,6 +234,7 @@ def moderator_dashboard(request):
 
     return render(request, "moderator_dashboard.html", {"posts": posts, "users": users})
 
+#TODO
 @login_required
 def edit_user(request, user_id):
     role = request.COOKIES.get("role", "user")  # Attackers can modify this!
@@ -308,10 +330,15 @@ def reset_password_view(request):
         "new_password": new_password
     }).json()
 
+    # Check if the user_id is a valid base64 encoded string
+    try:
+        decoded_user_id = base64.b64decode(user_id).decode('utf-8')
+    except (TypeError, ValueError):
+        return JsonResponse({"message": "Invalid user ID format.", "status": "error"})
 
     # get the flag for exercise 5 if the user is not the same as the one resetting the password
     flag_ex5 = None
-    if str(request.user.id) != str(user_id):
+    if str(request.user.id) != decoded_user_id:
         flag_response = requests.post("https://api-dvwa.onrender.com/api/get_flag", json={"exercise": "5"})
         if flag_response.status_code == 200:
             flag_ex5 = flag_response.json().get("flag")

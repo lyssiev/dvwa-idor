@@ -15,7 +15,7 @@
 
 <body class="d-flex align-items-center justify-content-center vh-100 bg-light">
     <div class="card shadow-lg p-4 text-center disclaimer-box">
-    <div class="container text-center d-flex flex-column align-items-center justify-content-center" style="max-width: 600px;">
+    <div class="container text-center d-flex flex-column align-items-center justify-content-center" style="max-width: 1000px;">
         <h2 class="fw-bold disclaimer-text">Welcome to the Deliberately Vulnerable Web Application!</h2>
 
         <p class="mt-4">
@@ -25,6 +25,15 @@
         <p class="mt-4">
             Despite the fact that OWASP lists them as one of the top web application vulnerabilities, many training tools do not focus on IDORs specifically. This application hopes to educate developers on what IDORs are, how to find them, and how to mitigate against them.
         </p>
+
+        <p class="mt-4"></p>
+            You are tasked with testing a new social media site that Exeter University wants to release. On the surface, everything may look secure, but if you dig deeper, you may be able to find some serious security vulnerabilities! In this application:
+        </p>
+        <ul class="text-start">
+            <li><strong>Users</strong> can create posts, comment, and interact with others.</li>
+            <li><strong>Moderators</strong> have extra privileges - they can edit users and manage content.</li>
+            <li>The site also has a <strong>REST API</strong> that handles "secure functions".</li>
+        </ul>
 
         <p class="mt-4">
             Your goal is to complete each exercise by <strong>finding the flags</strong> and entering them in the box on the sidebar. Once you are done, please look through the <strong>fixed version of the application</strong> and see the changes made in the code to patch the vulnerabilities. Have fun!

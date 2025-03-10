@@ -1,3 +1,4 @@
+import base64
 import os
 import django
 import sys
@@ -6,6 +7,7 @@ from flask import Flask, jsonify, request
 from flask_sqlalchemy import SQLAlchemy
 from flask_cors import CORS
 from django.contrib.auth.hashers import make_password
+import hashlib
 
 app = Flask(__name__)
 CORS(app)
@@ -19,6 +21,9 @@ django.setup()
 app.config['SQLALCHEMY_DATABASE_URI'] = f"sqlite:///{os.path.join(BASE_DIR, 'db.sqlite3')}"
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 db = SQLAlchemy(app)
+
+def hash_user_id(user_id):
+    return hashlib.sha256(str(user_id).encode()).hexdigest()
 
 # defining User model to query the auth_user table
 class User(db.Model):
@@ -61,25 +66,29 @@ def get_user_data():
 @app.route('/api/reset_password', methods=['POST'])
 def reset_password():
     data = request.json
-    user_id = data.get("user_id")
+    encoded_user_id = data.get("user_id")  # Expecting Base64 encoded user ID
     new_password = data.get("new_password")
 
-    user = User.query.filter_by(id=user_id).first()
+    # Decode Base64 user ID
+    try:
+        decoded_user_id = int(base64.b64decode(encoded_user_id).decode())
+    except Exception:
+        return jsonify({"message": "Invalid user ID format", "status": "error"}), 400
+
+    user = User.query.filter_by(id=decoded_user_id).first()
     if not user:
         return jsonify({"message": "User not found", "status": "error"}), 404
 
     # update user password based on django password hashing
     user.password = make_password(new_password)
     db.session.commit()
+    db.session.close()
 
     return jsonify({
         "message": f"Password reset successful for {user.username}",
         "status": "success",
         "username": user.username # included for determining flag in front end
     })
-
-
-    
 
 if __name__ == '__main__':
     app.run(debug=False, port=5000)

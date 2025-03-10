@@ -64,11 +64,15 @@
     <div class="modal-dialog modal-dialog-centered">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title fw-bold" id="exercise1Label">Exercise 1</h5>
+                <h5 class="modal-title fw-bold" id="exercise1Label">Exercise 1 - URL Tampering</h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body">
-                <p>Exercise 1 description goes here.</p>
+                <p>   
+                Create an account, take a look around the website, and see what you can do!
+                <br><br>
+                <strong>URL tampering</strong> is an Insecure Direct Object Reference vulnerability that allows a person to access restricted content by modifying the <strong>parameters</strong> of a URL.  See if you can gain access to something you are not supposed to!
+                </p>
             </div>
         </div>
     </div>
@@ -79,11 +83,27 @@
     <div class="modal-dialog modal-dialog-centered">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title fw-bold" id="exercise2Label">Exercise 2</h5>
+                <h5 class="modal-title fw-bold" id="exercise2Label">Exercise 2 - Cookie Manipulation</h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body">
-                <p>Exercise 2 description goes here.</p>
+                <p>This exercise focusses on cookie manipulation. Remember, you can change cookies in the ‘Inspect’ tab!</p>
+                <button type="button" class="btn btn-dark mt-3" data-bs-toggle="modal" data-bs-target="#hint2Modal">Hint</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Hint for Exercise 2 -->
+<div class="modal fade" id="hint2Modal" tabindex="-1" aria-labelledby="hint2Label" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title fw-bold" id="hint2Label">Hint for Exercise 2</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <p>Developers sometimes think hashing ids is enough to secure their APIs, but this is not always the case. Look up some common hashing algorithms and see if you can reverse engineer the hash!</p>
             </div>
         </div>
     </div>
@@ -94,11 +114,49 @@
     <div class="modal-dialog modal-dialog-centered">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title fw-bold" id="exercise3Label">Exercise 3</h5>
+                <h5 class="modal-title fw-bold" id="exercise3Label">Exercise 3 - Body Manipulation</h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body">
-                <p>Exercise 3 description goes here.</p>
+                <p>This exercise is all about intercepting requests and changing the information contained within them - a technique known as Body Manipulation.
+                <br><br>
+                This challenge focusses on horizontal privilege escalation, which means you will attempt to view or edit another user's data without extending your own permissions.
+                <br><br>
+                Take a look at your feed and see what you can do. Can you change something you shouldn't be able to?
+                <br><br>
+                <button type="button" class="btn btn-dark mt-3" data-bs-toggle="modal" data-bs-target="#hint3Modal">Hint 1</button>
+                <button type="button" class="btn btn-dark mt-3" data-bs-toggle="modal" data-bs-target="#hint3Modal2">Hint 2</button>
+                </p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Hint 1 for Exercise 3 -->
+<div class="modal fade" id="hint3Modal" tabindex="-1" aria-labelledby="hint3Label" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title fw-bold" id="hint3Label">Hint for Exercise 3</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <p>Hint: If sending a post is secure, look at other kinds of requests sent!</p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Hint 2 for Exercise 3 -->
+<div class="modal fade" id="hint3Modal2" tabindex="-1" aria-labelledby="hint3Label" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title fw-bold" id="hint3Label">Hint for Exercise 3</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <p>Hint: Use Burpsuite to intercept and modify requests. Look for user IDs or other identifiers in the request body.</p>
             </div>
         </div>
     </div>
@@ -109,11 +167,58 @@
     <div class="modal-dialog modal-dialog-centered">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title fw-bold" id="exercise4Label">Exercise 4</h5>
+                <h5 class="modal-title fw-bold" id="exercise4Label">Exercise 4 - HTTP request manipulation</h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body">
-                <p>Exercise 4 description goes here.</p>
+                <p>In this exercise, there is an insecure API endpoint that leaks user information. It’s not in use at the moment, but you may still be able to get access to it. 
+                <br><br>
+                Your goal is to exploit this vulnerability and access another user's sensitive data. The API is running on port 5000.
+                <br><br>
+                <button type="button" class="btn btn-dark mt-3" data-bs-toggle="modal" data-bs-target="#hint4Modal">Hint 1</button>
+                <button type="button" class="btn btn-dark mt-3" data-bs-toggle="modal" data-bs-target="#hint4Modal2">Hint 2</button>
+                </p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Hint 1 for Exercise 4 -->
+<div class="modal fade" id="hint4Modal" tabindex="-1" aria-labelledby="hint4Label" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title fw-bold" id="hint4Label">Hint for Exercise 4</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <p>Hint: Many API endpoints follow common naming conventions, such as:</p>
+                <ul>
+                    <li>/api/profile/1</li>
+                    <li>/api/user_data/1</li>
+                    <li>/users/1</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Hint 2 for Exercise 4 -->
+<div class="modal fade" id="hint4Modal2" tabindex="-1" aria-labelledby="hint4Label2" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title fw-bold" id="hint4Label2">Hint for Exercise 4</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <p>Hint: Here is a helpful code snippet!
+                <pre class="bg-light-green fa-align-center text-white p-2 rounded">
+                    fetch('http://127.0.0.1:5000/api/endpoint_name?user_id=user_id')
+                    .then(response => response.json())
+                    .then(data => console.log(data));
+                </pre>
+                </p>
             </div>
         </div>
     </div>
@@ -124,11 +229,52 @@
     <div class="modal-dialog modal-dialog-centered">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title fw-bold" id="exercise5Label">Exercise 5</h5>
+                <h5 class="modal-title fw-bold" id="exercise5Label">Exercise 5 - JSON request manipulation</h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body">
-                <p>Exercise 5 description goes here.</p>
+                <p>
+                    In this exercise, you'll use an insecure password reset API.  
+                    <br><br>
+                    The system allows users to reset their passwords, but there are no adequate access controls in place. 
+                    <br><br> 
+                    Your goal is to change the API request to reset another user's password.
+                    <br><br>
+                    <button type="button" class="btn btn-dark mt-3" data-bs-toggle="modal" data-bs-target="#hint5Modal">Hint 1</button>
+                    <button type="button" class="btn btn-dark mt-3" data-bs-toggle="modal" data-bs-target="#hint5Modal2">Hint 2</button>
+                </p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Hint 1 for Exercise 5 -->
+<div class="modal fade" id="hint5Modal" tabindex="-1" aria-labelledby="hint5Label" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title fw-bold" id="hint5Label">Hint for Exercise 5</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <p>Hint: Use Burpsuite to modify the API request and see if you can reset another user's password.</p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Hint 2 for Exercise 5 -->
+<div class="modal fade" id="hint5Modal2" tabindex="-1" aria-labelledby="hint5Label2" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title fw-bold" id="hint5Label2">Hint for Exercise 5</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <p>
+                    Hint: Some developers think that encoding their user ids will be enough to secure their APIs. Try decoding the user id and see if you can use it to reset another user's password.
+                </p>
             </div>
         </div>
     </div>

@@ -51,6 +51,9 @@ function markExerciseCompleted(exerciseNumber) {
 // function to update the progress bar
 function updateProgressBar(progress) {
     document.getElementById("progressBar").style.width = progress + "%";
+    if (progress === 100) {
+        window.location.href = window.location.origin + "/solutions/";
+    }
 }
 
 /* DELETE LATER - testing for resetting progress */
@@ -82,6 +85,7 @@ document.getElementById("resetProgressBtn").addEventListener("click", function (
 });
 
 // function to get CSRF token from cookies
+// source: https://docs.djangoproject.com/en/3.2/ref/csrf/#ajax
 function getCSRFToken() {
     let cookieValue = null;
     if (document.cookie && document.cookie !== '') {
@@ -98,6 +102,7 @@ function getCSRFToken() {
 }
 
 // function to get the value of a cookie
+// source: https://docs.djangoproject.com/en/3.2/ref/csrf/#ajax
 function getCookie(name) {
     let cookieValue = null;
     if (document.cookie && document.cookie !== '') {

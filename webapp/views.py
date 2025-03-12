@@ -348,3 +348,6 @@ def reset_password_view(request):
         "status": flask_response.get("status"),
         "flag": flag_ex5
     })
+
+def solutions_view(request):
+    return render(request, "solutions.html")

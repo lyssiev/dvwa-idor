@@ -22,4 +22,5 @@ urlpatterns = [
     path('update_progress/', views.update_progress, name='update_progress'),
     path("reset_progress/", views.reset_progress, name="reset_progress"),
     path('reset_password_view/', views.reset_password_view, name='reset_password_view'),
+    path("solutions/", views.solutions_view, name="solutions"),
 ]

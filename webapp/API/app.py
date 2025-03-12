@@ -62,8 +62,12 @@ def get_user_data():
 def reset_password():
     data = request.json
     user_id = data.get("user_id")
-    user_id = base64.b64decode(user_id).decode('utf-8)') # decode the base64 encoded user_id
     new_password = data.get("new_password")
+
+    if not user_id or not new_password:
+        return jsonify({"message": "Missing parameters", "status": "error"}), 400
+
+    user_id = base64.b64decode(user_id).decode('utf-8')  # decode the base64 encoded user_id
 
     user = User.query.filter_by(id=user_id).first()
     if not user:
@@ -76,7 +80,7 @@ def reset_password():
     return jsonify({
         "message": f"Password reset successful for {user.username}",
         "status": "success",
-        "username": user.username # included for determining flag in front end
+        "username": user.username  # included for determining flag in front end
     })
 
 

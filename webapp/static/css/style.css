@@ -473,10 +473,6 @@ body {
     left: 0;
     width: 40px;
     height: 100vh;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    transition: left 0.3s ease;
 }
 
 /* Exercise bar styling */

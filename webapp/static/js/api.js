@@ -1,23 +1,5 @@
 /* Javascript used for API calls */
 
-// fetching user data
-function fetchUserData(userId) {
-  // ajax call to fetch user data
-  $.ajax({
-    url: "http://127.0.0.1:5000/api/user_data", // url of the API
-    type: "GET",
-    dataType: "json",
-    data: { user_id: userId }, // VULNERABILITY!
-    success: function (result) {
-      console.log("User Data:", result);
-      alert(`Username: ${result.username}\nEmail: ${result.email}`);
-    },
-    error: function (xhr, status, error) {
-      console.error("Error fetching user data:", error);
-    },
-  });
-}
-
 function encodeUserId(userId) {
   return btoa(userId.toString()); // Base64 encoding
 }
@@ -50,9 +32,10 @@ function resetPassword() {
     })
     .catch((err) => {
       console.error("Error:", err);
-      document.getElementById(
-        "resetMessage"
-      ).innerHTML = `<div class="alert alert-danger">Something went wrong: ${err.message}</div>`;
+      document.getElementById("resetMessage").innerHTML =
+        '<div class="alert alert-danger">Something went wrong: ' +
+        err.message +
+        "</div>";
     });
 }
 

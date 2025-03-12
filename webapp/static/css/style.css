@@ -449,10 +449,15 @@ body {
     background-color: #035b57 !important;
 }
 
+.txt-white {
+    color: #ffffff !important;
+}
+
 .sidebar {
-    width: 300px;
+    width: 400px;
     height: 100vh;
     position: fixed;
+    overflow-y: auto;
     top: 0;
     left: 0;
     border-radius: 0 15px 15px 0;
@@ -462,11 +467,22 @@ body {
     padding: 20px;
 }
 
+.sidebar-toggle {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 40px;
+    height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: left 0.3s ease;
+}
 
 /* Exercise bar styling */
 
 .exercise-box {
-    background-color: #04cb95; 
+    background-color: #04cb95;
     border-radius: 15px;
     box-shadow: 2px 2px 10px rgba(0, 0, 0, 0.1);
     text-align: center;
@@ -491,12 +507,13 @@ body {
 }
 
 .completed-exercise {
-    background-color: #035b57 !important; 
+    background-color: #035b57 !important;
     color: white !important;
 }
 
 .progress-bar {
-    background-color: #04cb95 !important;  /* ✅ Light Green */
+    background-color: #04cb95 !important;
+    /* ✅ Light Green */
     transition: width 0.5s ease-in-out;
 }
 

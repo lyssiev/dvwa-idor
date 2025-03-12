@@ -6,7 +6,7 @@ from django.contrib import messages
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth.decorators import login_required
 from .forms import PostForm, PrivacyForm, CommentForm
-from django.http import HttpResponse, HttpResponseForbidden
+from django.http import HttpResponseForbidden
 import requests
 import json
 import base64
@@ -22,10 +22,7 @@ def login_view(request):
             login(request, user)
             response = redirect("home")
 
-            # Only assign "moderator" role (no more admin role)
             role = "moderator" if user.is_staff else "user"
-
-            print(f"🔍 Setting role cookie: {role}")  # Debugging output
 
             response.set_cookie("role", role)  # vulnerable to cookie manipulation
 
@@ -39,7 +36,6 @@ def logout_view(request):
     logout(request)
     return redirect('login')
 
-#TODO
 @login_required
 def home_view(request):
     """ Vulnerable Home View - Uses a SHA256-encoded cookie to determine role instead of Django's authentication """
@@ -75,7 +71,7 @@ def home_view(request):
 
     return response
 
-
+@login_required
 def feed_view(request):
     form = PostForm(request.POST or None)
 
@@ -99,7 +95,6 @@ def feed_view(request):
     print("Total posts:", all_posts.count())
 
     return render(request, "feed.html", {"form": form, "all_posts": all_posts})
-
 
 def register_view(request):
     if request.method == 'POST':
@@ -126,22 +121,25 @@ def register_view(request):
 
     return render(request, 'register.html')
 
+@login_required
 def profile_list(request):
     profiles = Profile.objects.exclude(user=request.user)  # Exclude logged-in user
     followed_profiles = request.user.profile.follows.all()  # Get who the logged-in user follows
     return render(request, "profile_list.html", {"profiles": profiles, "followed_profiles": followed_profiles})
 
-
+@login_required
 def following(request, pk):
     profile = Profile.objects.get(pk=pk)
     following = profile.follows.all()
     return render(request, "following.html", {"profile": profile, "following": following})
 
+@login_required
 def followers(request, pk):
     profile = Profile.objects.get(pk=pk)
     followers = profile.followed_by.all()
     return render(request, "followers.html", {"profile": profile, "followers": followers})
 
+@login_required
 def profile(request, pk):
     if not hasattr(request.user, 'profile'):
         missing_profile = Profile(user=request.user)
@@ -150,7 +148,7 @@ def profile(request, pk):
     profile = get_object_or_404(Profile, pk=pk)
     flag = None
 
-    if profile.private and request.user != profile.user:
+    if profile.private and request.user != profile.user and profile not in request.user.profile.follows.all():
         try:
             response = requests.post("https://api-dvwa.onrender.com/api/get_flag", json={"exercise": "1"})
             print(f"API Response: {response.status_code}")
@@ -185,12 +183,15 @@ def user_settings(request):
 
     return render(request, "settings.html", {"privacy_form": privacy_form})
 
-
 FLAG_API_URL = "https://api-dvwa.onrender.com/api/get_flag"
 
 @login_required
 def post_view(request, post_id):
     post = get_object_or_404(Post, id=post_id)
+    post_user_profile = post.user.profile
+
+    if post_user_profile.private and request.user != post.user and post_user_profile not in request.user.profile.follows.all():
+        return HttpResponseForbidden()
     comments = post.comments.all()
     comment_form = CommentForm()
     
@@ -218,15 +219,12 @@ def post_view(request, post_id):
             return redirect("post", post_id=post.id)
     return render(request, "post.html", {"post": post, "comments": comments, "comment_form": comment_form, "flag_ex3": flag_ex3})
 
-
-# moderator views
-#TODO
 @login_required
 def moderator_dashboard(request):
     """ Uses a cookie instead of Django authentication"""
     role = request.COOKIES.get("role", "user")
 
-    if role != "moderator":
+    if role != "cfde2ca5188afb7bdd0691c7bef887baba78b709aadde8e8c535329d5751e6fe":
         return HttpResponseForbidden("Access Denied - Only Moderators Allowed!")
 
     posts = Post.objects.all()
@@ -234,12 +232,11 @@ def moderator_dashboard(request):
 
     return render(request, "moderator_dashboard.html", {"posts": posts, "users": users})
 
-#TODO
 @login_required
 def edit_user(request, user_id):
     role = request.COOKIES.get("role", "user")  # Attackers can modify this!
 
-    if role != "moderator":
+    if role != "cfde2ca5188afb7bdd0691c7bef887baba78b709aadde8e8c535329d5751e6fe":
         return HttpResponseForbidden("You do not have permission to edit users.")
 
     user = get_object_or_404(User, id=user_id)
@@ -252,13 +249,12 @@ def edit_user(request, user_id):
 
     return redirect("moderator_dashboard")
 
-
 @login_required
 def delete_post(request, post_id):
     """ Vulnerable Moderator Action - Uses cookie-based authentication to allow post deletion"""
     role = request.COOKIES.get("role", "user")  # Attackers can modify this!
 
-    if role != "moderator":
+    if role != "cfde2ca5188afb7bdd0691c7bef887baba78b709aadde8e8c535329d5751e6fe":
         return HttpResponseForbidden(" You do not have permission to delete posts.")
 
     post = get_object_or_404(Post, id=post_id)
@@ -275,7 +271,7 @@ def introduction(request):
 @login_required
 def update_progress(request):
     if request.method == "POST":
-        progress, created = Progress.objects.get_or_create(user=request.user)
+        progress, _ = Progress.objects.get_or_create(user=request.user)
         data = request.POST
         exercise_number = int(data.get("exercise"))
         if exercise_number not in progress.completed_exercises:
@@ -283,7 +279,6 @@ def update_progress(request):
             progress.save()
 
         return JsonResponse({"completed_exercises": progress.completed_exercises})
-    
 
 @login_required
 def get_progress(request):
@@ -305,7 +300,7 @@ def update_progress(request):
             "completed_exercises": progress.get_completed_exercises(),
             "progress": progress.progress_percentage()
         })
-        
+
 @login_required
 def reset_progress(request):
     """Resets the user's progress by clearing completed exercises from the database."""
@@ -317,7 +312,7 @@ def reset_progress(request):
         return JsonResponse({"message": "Progress reset successfully!", "status": "success"})
     except Progress.DoesNotExist:
         return JsonResponse({"message": "No progress found to reset.", "status": "error"})
-    
+
 @login_required
 def reset_password_view(request):
     data = json.loads(request.body)

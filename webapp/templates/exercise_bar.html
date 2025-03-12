@@ -3,10 +3,10 @@
 {% load static %}
 
 <head>
+    <link rel ="icon" href="{% static 'favicon.ico' %}" type="image/x-icon">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css">
     <link rel="stylesheet" href="{% static 'css/style.css' %}">
 </head>
-
 
 <body>
 
@@ -16,7 +16,7 @@
 </button>
 
 <!-- Sidebar -->
-<div class="offcanvas offcanvas-start sidebar bg-green text-white rounded-3 shadow-lg" tabindex="-1" id="sidebar" data-bs-backdrop="false">
+<div class="offcanvas sidebar bg-green text-white rounded-3 shadow-lg" tabindex="-1" id="sidebar" data-bs-backdrop="false">
     <div class="offcanvas-header">
         <h4 class="offcanvas-title fw-bold">Welcome to the DVWA!</h4>
         <button type="button" class="btn-close btn-close-white" data-bs-dismiss="offcanvas" aria-label="Close"></button>
@@ -103,7 +103,7 @@
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body">
-                <p>Developers sometimes think hashing ids is enough to secure their APIs, but this is not always the case. Look up some common hashing algorithms and see if you can reverse engineer the hash!</p>
+                <p>This vulnerability is found on your profile. Developers sometimes think hashing ids is enough to secure their APIs, but this is not always the case. Look up some common hashing algorithms and see if you can reverse engineer the hash!</p>
             </div>
         </div>
     </div>
@@ -173,7 +173,7 @@
             <div class="modal-body">
                 <p>In this exercise, there is an insecure API endpoint that leaks user information. It’s not in use at the moment, but you may still be able to get access to it. 
                 <br><br>
-                Your goal is to exploit this vulnerability and access another user's sensitive data. The API is running on port 5000.
+                Your goal is to exploit this vulnerability and access the admin's sensitive data. The API is running on port 5000.
                 <br><br>
                 <button type="button" class="btn btn-dark mt-3" data-bs-toggle="modal" data-bs-target="#hint4Modal">Hint 1</button>
                 <button type="button" class="btn btn-dark mt-3" data-bs-toggle="modal" data-bs-target="#hint4Modal2">Hint 2</button>
@@ -214,9 +214,9 @@
             <div class="modal-body">
                 <p>Hint: Here is a helpful code snippet!
                 <pre class="bg-light-green fa-align-center text-white p-2 rounded">
-                    fetch('http://127.0.0.1:5000/api/endpoint_name?user_id=user_id')
-                    .then(response => response.json())
-                    .then(data => console.log(data));
+fetch('http://127.0.0.1:5000/api/endpoint_name?user_id=user_id')
+.then(response => response.json())
+.then(data => console.log(data));
                 </pre>
                 </p>
             </div>

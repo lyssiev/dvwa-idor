@@ -4,6 +4,7 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+    <link rel="icon" href="{% static 'favicon.ico' %}" type="image/x-icon">
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>Moderator Dashboard</title>
@@ -33,7 +34,7 @@
 <body>
     {% include 'exercise_bar.html' %}
 
-    <div class="text-center mt-4">
+    <div class="text-center mt-4 p-2">
         <a href="{% url 'home' %}" class="btn btn-secondary">Back to Profile</a>
     </div>
 
@@ -42,7 +43,7 @@
         <p class="text-center text-muted">Welcome! You can manage posts and users.</p>
 
         <div class="card my-4">
-            <div class="card-header bg-danger text-white">
+            <div class="card-header bg-light-green text-white">
                 <h3>Delete Posts</h3>
             </div>
             <div class="card-body">
@@ -52,7 +53,7 @@
                             <span>{{ post.body }} - <strong>{{ post.user.username }}</strong></span>
                             <form method="POST" action="{% url 'delete_post' post.id %}">
                                 {% csrf_token %}
-                                <button type="submit" class="btn btn-danger btn-sm">Delete</button>
+                                <button type="submit" class="btn bg-light-green btn-sm text-white">Delete</button>
                             </form>
                         </li>
                     {% empty %}
@@ -63,7 +64,7 @@
         </div>
 
         <div class="card my-4">
-            <div class="card-header bg-primary text-white">
+            <div class="card-header bg-green text-white">
                 <h3>Edit Users</h3>
             </div>
             <div class="card-body">
@@ -74,7 +75,7 @@
                             <form method="POST" action="{% url 'edit_user' user.user.id %}" class="d-flex gap-2 mt-2">
                                 {% csrf_token %}
                                 <input type="text" name="new_username" class="form-control form-control-sm" placeholder="New username">
-                                <button type="submit" class="btn btn-primary btn-sm">Change Username</button>
+                                <button type="submit" class="btn bg-green text-white btn-sm">Change Username</button>
                             </form>
                         </li>
                     {% empty %}

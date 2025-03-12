@@ -33,9 +33,7 @@ function resetPassword() {
     .catch((err) => {
       console.error("Error:", err);
       document.getElementById("resetMessage").innerHTML =
-        '<div class="alert alert-danger">Something went wrong: ' +
-        err.message +
-        "</div>";
+        '<div class="alert alert-danger">Something went wrong. Please try again later.</div>';
     });
 }
 

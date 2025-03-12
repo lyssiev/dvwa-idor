@@ -32,7 +32,6 @@ class User(db.Model):
 @app.route('/api/user_data', methods=['GET'])
 def get_user_data():
     user_id = request.args.get("user_id")
-    current_user_id = request.args.get("current_user_id")  # Simulate logged-in user ID
 
     if not user_id:
         return jsonify({"error": "Missing user_id parameter"}), 400
@@ -47,8 +46,8 @@ def get_user_data():
         "email": user.email  # data exposed!
     }
 
-    # iF request sent from a different user, get the flag
-    if current_user_id and str(current_user_id) != str(user_id):
+    # If accessing user id 1, get the flag
+    if str(user_id) == "1":
         flag_response = requests.post(
             "https://api-dvwa.onrender.com/api/get_flag",
             json={"exercise": "4"}

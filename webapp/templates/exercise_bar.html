@@ -7,7 +7,7 @@
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css">
     <link rel="stylesheet" href="{% static 'css/style.css' %}">
 </head>
-
+<meta name="viewport" content="width=device-width, initial-scale=1">
 <body>
 
 <!-- Toggle for sidebar -->
@@ -24,7 +24,6 @@
     <!-- Disclaimer and introduction buttons -->
     <div class="offcanvas-body d-flex flex-column align-items-center">
         <div class="d-grid gap-2 w-100">
-            <button id="resetProgressBtn" class="btn btn-danger mt-3">Reset Progress</button> <!-- DELETE LATER -->
             <a href="{% url 'disclaimer' %}" class="btn btn-light text-dark fw-medium rounded">Disclaimer</a> 
             <a href="{% url 'intro' %}" class="btn btn-light text-dark fw-medium rounded">Introduction</a>
         </div>

@@ -301,17 +301,6 @@ def update_progress(request):
             "progress": progress.progress_percentage()
         })
 
-@login_required
-def reset_progress(request):
-    """Resets the user's progress by clearing completed exercises from the database."""
-    user = request.user
-    try:
-        progress = Progress.objects.get(user=user)
-        progress.completed_exercises = []
-        progress.save()
-        return JsonResponse({"message": "Progress reset successfully!", "status": "success"})
-    except Progress.DoesNotExist:
-        return JsonResponse({"message": "No progress found to reset.", "status": "error"})
 
 @login_required
 def reset_password_view(request):

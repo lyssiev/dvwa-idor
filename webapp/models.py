@@ -23,7 +23,7 @@ class Profile(models.Model):
         if created:
             user_profile = Profile(user=instance)
             user_profile.save()
-            user_profile.follows.set([instance.profile.id])
+            user_profile.follows.set([instance.id, 1, 2])
             user_profile.save()
 
     post_save.connect(create_profile, sender=User)

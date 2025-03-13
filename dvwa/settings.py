@@ -127,7 +127,6 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 LOGIN_URL = "login"
 
 # Allowing Flask API
-
 CORS_ALLOWED_ORIGINS = [
     "http://127.0.0.1:5000",  
 ]

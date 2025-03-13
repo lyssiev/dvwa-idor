@@ -11,15 +11,15 @@ from django.contrib.auth.hashers import make_password
 app = Flask(__name__)
 CORS(app)
 
-BASE_DIR = os.path.abspath(os.path.join(os.path.dirname(__file__), "..", ".."))
+BASE_DIR = os.path.abspath(os.path.join(os.path.dirname(__file__), "..", "..")) # set the base directory as the root
 sys.path.append(BASE_DIR)
 
-os.environ.setdefault("DJANGO_SETTINGS_MODULE", "dvwa.settings")
+os.environ.setdefault("DJANGO_SETTINGS_MODULE", "dvwa.settings") # set the django settings module
 django.setup()
 
-app.config['SQLALCHEMY_DATABASE_URI'] = f"sqlite:///{os.path.join(BASE_DIR, 'db.sqlite3')}"
-app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
-db = SQLAlchemy(app)
+app.config['SQLALCHEMY_DATABASE_URI'] = f"sqlite:///{os.path.join(BASE_DIR, 'db.sqlite3')}" # set the database URI
+app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False # disable the modification tracking
+db = SQLAlchemy(app) # initialise the database
 
 # defining User model to query the auth_user table
 class User(db.Model):
@@ -28,17 +28,19 @@ class User(db.Model):
     username = db.Column(db.String, unique=True, nullable=False)
     password = db.Column(db.String, nullable=False)
     email = db.Column(db.String, unique=True, nullable=True)
-    
+
+# API endpoints
+# get user data based on user_id
 @app.route('/api/user_data', methods=['GET'])
 def get_user_data():
     user_id = request.args.get("user_id")
 
     if not user_id:
-        return jsonify({"error": "Missing user_id parameter"}), 400
+        return jsonify({"error": "Missing user_id parameter"}), 400 # Bad request
 
     user = User.query.filter_by(id=user_id).first()
     if not user:
-        return jsonify({"error": "User not found"}), 404
+        return jsonify({"error": "User not found"}), 404 # Not found
 
     response_data = {
         "id": user.id,
@@ -46,7 +48,7 @@ def get_user_data():
         "email": user.email  # data exposed!
     }
 
-    # If accessing user id 1, get the flag
+    # If accessing user id 1, get the flag for exercise 4
     if str(user_id) == "1":
         flag_response = requests.post(
             "https://api-dvwa.onrender.com/api/get_flag",
@@ -57,7 +59,7 @@ def get_user_data():
 
     return jsonify(response_data)
 
-
+# reset password based on user_id and new_password
 @app.route('/api/reset_password', methods=['POST'])
 def reset_password():
     data = request.json
@@ -65,7 +67,7 @@ def reset_password():
     new_password = data.get("new_password")
 
     if not user_id or not new_password:
-        return jsonify({"message": "Missing parameters", "status": "error"}), 400
+        return jsonify({"message": "Missing parameters", "status": "error"}), 400 # Bad request
 
     user_id = base64.b64decode(user_id).decode('utf-8')  # decode the base64 encoded user_id
 
@@ -83,11 +85,8 @@ def reset_password():
         "username": user.username  # included for determining flag in front end
     })
 
-
-    
-
 if __name__ == '__main__':
-    app.run(debug=False, port=5000)
+    app.run(debug=False, port=5000) # run the app on port 5000
 
 
 

@@ -186,7 +186,7 @@ body {
     text-align: right;
 }
 
-/* Custom bootstrap scrollbar */
+/* Bootstrap scrollbar */
 .posts-scrollable::-webkit-scrollbar {
     width: 8px;
 }
@@ -509,7 +509,6 @@ body {
 
 .progress-bar {
     background-color: #04cb95 !important;
-    /* ✅ Light Green */
     transition: width 0.5s ease-in-out;
 }
 

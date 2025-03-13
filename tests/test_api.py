@@ -57,7 +57,7 @@ def test_invalid_user_id(client):
         "new_password": "newpassword123"
     }), content_type="application/json")
 
-    assert response.status_code == 404
+    assert response.status_code == 404 # Check that the response is 404
 
 def test_missing_fields(client):
     """Test password reset with missing fields"""
@@ -65,7 +65,7 @@ def test_missing_fields(client):
         "user_id": base64.b64encode(str(1).encode('utf-8')).decode('utf-8')  # Missing new_password
     }), content_type="application/json")
 
-    assert response.status_code == 400
+    assert response.status_code == 400 # Check that the response is 400
 
 def test_empty_password(client):
     """Test password reset with an empty password"""
@@ -74,7 +74,7 @@ def test_empty_password(client):
         "new_password": ""  # Empty password
     }), content_type="application/json")
 
-    assert response.status_code == 400
+    assert response.status_code == 400  # Check that the response is 400
 
 def test_non_integer_user_id(client):
     """Test password reset with a non-integer user ID"""
@@ -83,12 +83,12 @@ def test_non_integer_user_id(client):
         "new_password": "newpassword123"
     }), content_type="application/json")
 
-    assert response.status_code == 404
+    assert response.status_code == 404 # Check that the response is 404
 
 def test_get_valid_user(client):
     """Test retrieving a valid user"""
     response = client.get("/api/user_data?user_id=2")  # Request Bob's profile
-    assert response.status_code == 200
+    assert response.status_code == 200  # Check that the response is 200
 
     data = response.get_json()
     assert data["username"] == "bob"
@@ -99,9 +99,9 @@ def test_get_valid_user(client):
 def test_get_user_1_with_flag(client):
     """Test retrieving user 1 (Alice) and ensuring flag is returned"""
     response = client.get("/api/user_data?user_id=1")  # Request Alice's profile
-    assert response.status_code == 200
+    assert response.status_code == 200 # Check that the response is 200
     data = response.get_json()
-    assert data["username"] == "alice"
+    assert data["username"] == "alice"  # Check that the username is alice
     assert data["email"] == "alice@example.com"
     assert "flag" in data
 
@@ -110,12 +110,12 @@ def test_get_non_existent_user(client):
     """Test requesting a user that does not exist"""
     response = client.get("/api/user_data?user_id=999")  # Invalid user ID
     assert response.status_code == 404
-    assert "User not found" in response.get_json()["error"]
+    assert "User not found" in response.get_json()["error"] # Check that the response is 404
 
 
 def test_missing_user_id_parameter(client):
     """Test requesting user data without providing user_id"""
     response = client.get("/api/user_data")  # Missing `user_id` parameter
     assert response.status_code == 400
-    assert "Missing user_id parameter" in response.get_json()["error"]
+    assert "Missing user_id parameter" in response.get_json()["error"] # Check that the response is 400
 

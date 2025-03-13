@@ -13,6 +13,7 @@ import base64
 import hashlib
 
 def login_view(request):
+    """ Handles user login """
     if request.method == "POST":
         username = request.POST.get("username")
         password = request.POST.get("password")
@@ -33,13 +34,13 @@ def login_view(request):
     return render(request, "login.html")
 
 def logout_view(request):
+    """ Handles user logout """
     logout(request)
     return redirect('login')
 
 @login_required
 def home_view(request):
     """ Vulnerable Home View - Uses a SHA256-encoded cookie to determine role instead of Django's authentication """
-
     profile = Profile.objects.get(user=request.user)
 
     # Default role is "user", hashed with SHA256
@@ -73,6 +74,7 @@ def home_view(request):
 
 @login_required
 def feed_view(request):
+    """ Displays the user's feed with their posts and posts from followed users """
     form = PostForm(request.POST or None)
 
     if request.method == "POST":
@@ -97,6 +99,7 @@ def feed_view(request):
     return render(request, "feed.html", {"form": form, "all_posts": all_posts})
 
 def register_view(request):
+    """ Handles user registration """
     if request.method == 'POST':
         username = request.POST['username']
         password = request.POST['password']
@@ -115,7 +118,7 @@ def register_view(request):
             messages.error(request, "Email already registered.")
             return render(request, "register.html")
 
-        User.objects.create_user(username=username, email=email,password=password)
+        User.objects.create_user(username=username, email=email, password=password)
         messages.success(request, "Account created successfully! Please log in.")
         return redirect('login')
 
@@ -123,24 +126,28 @@ def register_view(request):
 
 @login_required
 def profile_list(request):
+    """ Displays a list of profiles excluding the logged-in user """
     profiles = Profile.objects.exclude(user=request.user)  # Exclude logged-in user
     followed_profiles = request.user.profile.follows.all()  # Get who the logged-in user follows
     return render(request, "profile_list.html", {"profiles": profiles, "followed_profiles": followed_profiles})
 
 @login_required
 def following(request, pk):
+    """ Displays the list of users that a specific profile is following """
     profile = Profile.objects.get(pk=pk)
     following = profile.follows.all()
     return render(request, "following.html", {"profile": profile, "following": following})
 
 @login_required
 def followers(request, pk):
+    """ Displays the list of followers of a specific profile """
     profile = Profile.objects.get(pk=pk)
     followers = profile.followed_by.all()
     return render(request, "followers.html", {"profile": profile, "followers": followers})
 
 @login_required
 def profile(request, pk):
+    """ Displays a specific user's profile and handles follow/unfollow actions """
     if not hasattr(request.user, 'profile'):
         missing_profile = Profile(user=request.user)
         missing_profile.save()
@@ -148,6 +155,7 @@ def profile(request, pk):
     profile = get_object_or_404(Profile, pk=pk)
     flag = None
 
+    # If the profile is private and the logged-in user is not the profile owner and not following the profile, fetch the flag as the IDOR has been exploited
     if profile.private and request.user != profile.user and profile not in request.user.profile.follows.all():
         try:
             response = requests.post("https://api-dvwa.onrender.com/api/get_flag", json={"exercise": "1"})
@@ -158,6 +166,7 @@ def profile(request, pk):
         except requests.exceptions.RequestException as e:
             print(f"Error fetching flag: {e}")
 
+    # Handle follow/unfollow actions
     if request.method == "POST":
         current_user_profile = request.user.profile
         data = request.POST
@@ -172,8 +181,10 @@ def profile(request, pk):
 
 @login_required
 def user_settings(request):
+    """ Handles updating user privacy settings """
     privacy_form = PrivacyForm(instance=request.user.profile)
 
+    # Handle updating privacy settings
     if request.method == "POST":
         privacy_form = PrivacyForm(request.POST, instance=request.user.profile)
         if privacy_form.is_valid():
@@ -187,9 +198,11 @@ FLAG_API_URL = "https://api-dvwa.onrender.com/api/get_flag"
 
 @login_required
 def post_view(request, post_id):
+    """ Displays a specific post and handles adding comments """
     post = get_object_or_404(Post, id=post_id)
     post_user_profile = post.user.profile
 
+    # If the post is private and the logged-in user is not the post owner and not following the post owner, return 403 Forbidden (also a fix to exercise 1)
     if post_user_profile.private and request.user != post.user and post_user_profile not in request.user.profile.follows.all():
         return HttpResponseForbidden()
     comments = post.comments.all()
@@ -201,7 +214,7 @@ def post_view(request, post_id):
         comment_form = CommentForm(request.POST)
         if comment_form.is_valid():
             user_id = request.POST.get("user_id")  # No validation so attacker can modify this.
-            user = get_object_or_404(User, id=user_id)  # Trusting the input (BAD)
+            user = get_object_or_404(User, id=user_id)  # Trusting the input
 
             comment = comment_form.save(commit=False)
             comment.user = user # attacker can change user
@@ -221,10 +234,10 @@ def post_view(request, post_id):
 
 @login_required
 def moderator_dashboard(request):
-    """ Uses a cookie instead of Django authentication"""
+    """ Displays the moderator dashboard with all posts and users """
     role = request.COOKIES.get("role", "user")
 
-    if role != "cfde2ca5188afb7bdd0691c7bef887baba78b709aadde8e8c535329d5751e6fe":
+    if role != "cfde2ca5188afb7bdd0691c7bef887baba78b709aadde8e8c535329d5751e6fe": # Only Moderators Allowed
         return HttpResponseForbidden("Access Denied - Only Moderators Allowed!")
 
     posts = Post.objects.all()
@@ -234,9 +247,10 @@ def moderator_dashboard(request):
 
 @login_required
 def edit_user(request, user_id):
+    """ Allows moderators to edit a user's username """
     role = request.COOKIES.get("role", "user")  # Attackers can modify this!
 
-    if role != "cfde2ca5188afb7bdd0691c7bef887baba78b709aadde8e8c535329d5751e6fe":
+    if role != "cfde2ca5188afb7bdd0691c7bef887baba78b709aadde8e8c535329d5751e6fe": # Only Moderators Allowed
         return HttpResponseForbidden("You do not have permission to edit users.")
 
     user = get_object_or_404(User, id=user_id)
@@ -251,10 +265,10 @@ def edit_user(request, user_id):
 
 @login_required
 def delete_post(request, post_id):
-    """ Vulnerable Moderator Action - Uses cookie-based authentication to allow post deletion"""
+    """ Allows moderators to delete a post """
     role = request.COOKIES.get("role", "user")  # Attackers can modify this!
 
-    if role != "cfde2ca5188afb7bdd0691c7bef887baba78b709aadde8e8c535329d5751e6fe":
+    if role != "cfde2ca5188afb7bdd0691c7bef887baba78b709aadde8e8c535329d5751e6fe": # Only Moderators Allowed
         return HttpResponseForbidden(" You do not have permission to delete posts.")
 
     post = get_object_or_404(Post, id=post_id)
@@ -263,13 +277,16 @@ def delete_post(request, post_id):
     return redirect("moderator_dashboard")
 
 def disclaimer(request):
+    """ Renders the disclaimer page """
     return render(request, 'disclaimer.html')
 
 def introduction(request):
+    """ Renders the introduction page """
     return render(request, 'introduction.html')
 
 @login_required
 def update_progress(request):
+    """ Updates the user's progress for an exercise """
     if request.method == "POST":
         progress, _ = Progress.objects.get_or_create(user=request.user)
         data = request.POST
@@ -282,6 +299,7 @@ def update_progress(request):
 
 @login_required
 def get_progress(request):
+    """ Retrieves the user's progress """
     progress, created = Progress.objects.get_or_create(user=request.user)
     return JsonResponse({
         "completed_exercises": progress.get_completed_exercises(),
@@ -290,6 +308,7 @@ def get_progress(request):
 
 @login_required
 def update_progress(request):
+    """ Updates the user's progress for an exercise """
     if request.method == "POST":
         progress, created = Progress.objects.get_or_create(user=request.user)
         exercise_number = int(request.POST.get("exercise"))
@@ -301,9 +320,9 @@ def update_progress(request):
             "progress": progress.progress_percentage()
         })
 
-
 @login_required
 def reset_password_view(request):
+    """ Resets a user's password and fetches a flag if the user is not the same as the one resetting the password """
     data = json.loads(request.body)
     user_id = data.get("user_id")
     new_password = data.get("new_password")
@@ -339,4 +358,5 @@ def reset_password_view(request):
     })
 
 def solutions_view(request):
+    """ Renders the solutions page """
     return render(request, "solutions.html")

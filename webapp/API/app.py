@@ -11,11 +11,20 @@ from django.contrib.auth.hashers import make_password
 app = Flask(__name__)
 CORS(app)
 
-BASE_DIR = os.path.abspath(os.path.join(os.path.dirname(__file__), "..", "..")) # set the base directory as the root
-sys.path.append(BASE_DIR)
+# ✅ Fix the BASE_DIR to ensure Django is found
+BASE_DIR = os.path.abspath(os.path.join(os.path.dirname(__file__), "..", ".."))
+sys.path.append(BASE_DIR)  # ✅ Ensure Django is inside Python path
 
-os.environ.setdefault("DJANGO_SETTINGS_MODULE", "dvwa.settings") # set the django settings module
+# ✅ Explicitly add webapp and dvwa
+sys.path.append(os.path.join(BASE_DIR, "webapp"))
+sys.path.append(os.path.join(BASE_DIR, "dvwa"))
+
+# ✅ Correct Django settings module
+os.environ.setdefault("DJANGO_SETTINGS_MODULE", "dvwa.settings")  
+
+# ✅ Now Django should initialize correctly
 django.setup()
+
 
 app.config['SQLALCHEMY_DATABASE_URI'] = f"sqlite:///{os.path.join(BASE_DIR, 'db.sqlite3')}" # set the database URI
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False # disable the modification tracking
@@ -85,8 +94,9 @@ def reset_password():
         "username": user.username  # included for determining flag in front end
     })
 
+# run the app on port 5000
 if __name__ == '__main__':
-    app.run(debug=False, port=5000) # run the app on port 5000
+    app.run(debug=False, host='0.0.0.0', port=5000)  # Allow connections from other containers
 
 
 

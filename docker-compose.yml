@@ -1,0 +1,28 @@
+services:
+  django:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: django_app
+    ports:
+      - "8000:8000"
+    volumes:
+      - .:/app
+    environment:
+      - DJANGO_SETTINGS_MODULE=dvwa.settings
+    depends_on:
+      - flask_api  # ✅ Django should only depend on Flask if it's calling Flask API
+
+  flask_api:
+    build:
+      context: .
+      dockerfile: webapp/API/Dockerfile
+    container_name: flask_api
+    restart: always
+    ports:
+      - "5000:5000"
+    volumes:
+      - .:/api  
+    environment:
+      - DJANGO_SETTINGS_MODULE=dvwa.settings
+    command: ["python", "/api/webapp/API/app.py"]

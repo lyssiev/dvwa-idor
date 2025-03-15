@@ -328,7 +328,7 @@ def reset_password_view(request):
     new_password = data.get("new_password")
 
     # send a request to the api to reset the password
-    flask_response = requests.post('http://127.0.0.1:5000/api/reset_password', json={
+    flask_response = requests.post('http://flask_api:5000/api/reset_password', json={
         "user_id": user_id,
         "new_password": new_password
     }).json()

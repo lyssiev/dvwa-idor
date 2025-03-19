@@ -10,19 +10,13 @@ from django.contrib.auth.hashers import make_password
 
 app = Flask(__name__)
 CORS(app)
-
-# ✅ Fix the BASE_DIR to ensure Django is found
 BASE_DIR = os.path.abspath(os.path.join(os.path.dirname(__file__), "..", ".."))
-sys.path.append(BASE_DIR)  # ✅ Ensure Django is inside Python path
+sys.path.append(BASE_DIR)  
 
-# ✅ Explicitly add webapp and dvwa
 sys.path.append(os.path.join(BASE_DIR, "webapp"))
 sys.path.append(os.path.join(BASE_DIR, "dvwa"))
 
-# ✅ Correct Django settings module
 os.environ.setdefault("DJANGO_SETTINGS_MODULE", "dvwa.settings")  
-
-# ✅ Now Django should initialize correctly
 django.setup()
 
 

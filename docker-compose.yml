@@ -11,7 +11,7 @@ services:
     environment:
       - DJANGO_SETTINGS_MODULE=dvwa.settings
     depends_on:
-      - flask_api  # ✅ Django should only depend on Flask if it's calling Flask API
+      - flask_api
 
   flask_api:
     build:

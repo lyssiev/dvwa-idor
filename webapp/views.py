@@ -94,8 +94,6 @@ def feed_view(request):
     # Combine and order posts by most recent
     all_posts = (user_posts | followed_posts).order_by("-created_at")
 
-    print("Total posts:", all_posts.count())
-
     return render(request, "feed.html", {"form": form, "all_posts": all_posts})
 
 def register_view(request):
